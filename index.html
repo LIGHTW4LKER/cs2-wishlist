@@ -341,10 +341,6 @@
     <header class="topbar">
       <div class="brand">
         <h1>CS2 Skin Wishlist</h1>
-        <p>
-          Простой wishlist без аккаунта и сервера. Список сохраняется только в браузере через localStorage.
-          Лимит: максимум 5 вариантов на одно оружие.
-        </p>
       </div>
       <div class="status">
         <div class="pill"><span id="dataDot" class="dot"></span><span id="dataStatus">Загрузка базы…</span></div>
@@ -354,12 +350,6 @@
 
     <section class="layout">
       <section class="panel">
-        <div class="panel-head">
-          <div>
-            <h2>База скинов</h2>
-            <small id="resultInfo">ожидание данных</small>
-          </div>
-        </div>
 
         <div class="controls">
           <div class="field">
@@ -390,24 +380,10 @@
       </section>
 
       <aside class="panel wishlist">
-        <div class="panel-head">
-          <div>
-            <h2>Мой wishlist</h2>
-            <small>localStorage / без логина</small>
-          </div>
-        </div>
-
-        <div class="toolbar">
-          <button id="exportBtn" class="btn">Export JSON</button>
-          <label class="btn" for="importInput">Import JSON</label>
-          <input id="importInput" class="hidden" type="file" accept="application/json">
-          <button id="clearBtn" class="btn danger">Очистить</button>
-        </div>
 
         <div class="content">
           <div id="wishlist" class="wish-list"></div>
           <div id="emptyWishlist" class="empty">Wishlist пустой.</div>
-          <div class="notice">Не клади API-ключи в frontend-код на GitHub Pages. Для платных API нужен backend/proxy.</div>
         </div>
       </aside>
     </section>
@@ -567,7 +543,7 @@
 
       els.emptySearch.classList.toggle("hidden", state.filteredSkins.length !== 0);
       els.showMoreBtn.disabled = state.visibleCount >= state.filteredSkins.length;
-      els.resultInfo.textContent = `${state.filteredSkins.length} найдено · показано ${visible.length}`;
+      if (els.resultInfo) els.resultInfo.textContent = `${state.filteredSkins.length} найдено · показано ${visible.length}`;
       els.skinsGrid.querySelectorAll("[data-add]").forEach(btn => btn.addEventListener("click", () => addToWishlist(btn.dataset.add)));
     }
 
@@ -649,9 +625,9 @@
         applyFilters();
       });
       els.showMoreBtn.addEventListener("click", () => { state.visibleCount += PAGE_SIZE; renderSkins(); });
-      els.exportBtn.addEventListener("click", exportWishlist);
-      els.importInput.addEventListener("change", () => importWishlist(els.importInput.files[0]));
-      els.clearBtn.addEventListener("click", clearWishlist);
+      if (els.exportBtn) els.exportBtn.addEventListener("click", exportWishlist);
+      if (els.importInput) els.importInput.addEventListener("change", () => importWishlist(els.importInput.files[0]));
+      if (els.clearBtn) els.clearBtn.addEventListener("click", clearWishlist);
     }
 
     async function loadData() {
@@ -671,7 +647,7 @@
       } catch (err) {
         els.dataDot.classList.add("bad");
         els.dataStatus.textContent = "Ошибка загрузки базы";
-        els.resultInfo.textContent = "База не загрузилась";
+        if (els.resultInfo) els.resultInfo.textContent = "База не загрузилась";
         els.emptySearch.classList.remove("hidden");
         els.emptySearch.textContent = "Не удалось загрузить skins.json. Проверь интернет или CORS.";
         console.error(err);
