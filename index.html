@@ -1,0 +1,687 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CS2 Skin Wishlist</title>
+  <meta name="description" content="Minimal local CS2 skin wishlist. No login, no tracking, wishlist is saved in localStorage." />
+  <style>
+    :root {
+      --bg: #0f1115;
+      --panel: #151821;
+      --panel-2: #1b1f2a;
+      --line: #2d3442;
+      --text: #e8eaf0;
+      --muted: #8b93a3;
+      --soft: #c7ccd6;
+      --accent: #9fb3ff;
+      --danger: #ff9b9b;
+      --ok: #9be6bb;
+      --shadow: 0 22px 80px rgba(0,0,0,.32);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top left, rgba(159,179,255,.10), transparent 32rem),
+        radial-gradient(circle at bottom right, rgba(155,230,187,.06), transparent 28rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    }
+
+    button, input, select, textarea { font: inherit; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .app {
+      width: min(1480px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px;
+      align-items: start;
+      margin-bottom: 22px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(32px, 4vw, 56px);
+      letter-spacing: -.05em;
+      line-height: .95;
+    }
+
+    .brand p {
+      max-width: 780px;
+      margin: 14px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .status {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-end;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .pill {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(21,24,33,.76);
+      color: var(--soft);
+      white-space: nowrap;
+    }
+
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+    .dot.ok { background: var(--ok); }
+    .dot.bad { background: var(--danger); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 420px;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      background: rgba(21, 24, 33, .82);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+    }
+
+    .panel-head {
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-head h2 { margin: 0; font-size: 18px; letter-spacing: -.02em; }
+    .panel-head small { color: var(--muted); }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr .8fr;
+      gap: 10px;
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(15,17,21,.4);
+    }
+
+    .field label {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 7px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      min-height: 42px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #0e1118;
+      color: var(--text);
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(159,179,255,.65);
+      box-shadow: 0 0 0 3px rgba(159,179,255,.12);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .btn {
+      border: 1px solid var(--line);
+      color: var(--text);
+      background: #11141c;
+      border-radius: 12px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    }
+
+    .btn:hover { background: #181c26; border-color: #455064; transform: translateY(-1px); }
+    .btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+    .btn.primary { background: rgba(159,179,255,.13); border-color: rgba(159,179,255,.32); }
+    .btn.danger { color: #ffd0d0; background: rgba(255,155,155,.08); border-color: rgba(255,155,155,.24); }
+
+    .content { padding: 18px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 12px;
+    }
+
+    .card {
+      min-height: 252px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(27,31,42,.95), rgba(18,21,29,.95));
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .skin-img-wrap {
+      height: 132px;
+      display: grid;
+      place-items: center;
+      padding: 12px;
+      background: linear-gradient(135deg, rgba(255,255,255,.045), transparent), rgba(255,255,255,.02);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .skin-img-wrap img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 14px 20px rgba(0,0,0,.45));
+    }
+
+    .card-body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .skin-name { font-size: 14px; line-height: 1.25; font-weight: 650; }
+    .meta { color: var(--muted); font-size: 12px; line-height: 1.35; }
+
+    .rarity {
+      width: fit-content;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid currentColor;
+      font-size: 11px;
+      opacity: .92;
+    }
+
+    .card-actions { margin-top: auto; display: flex; gap: 8px; align-items: center; }
+    .card-actions .btn { width: 100%; padding: 8px 10px; font-size: 13px; }
+
+    .empty {
+      padding: 38px 18px;
+      color: var(--muted);
+      text-align: center;
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+    }
+
+    .wishlist { position: sticky; top: 16px; }
+    .wish-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .weapon-group {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(15,17,21,.45);
+    }
+
+    .weapon-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      color: var(--soft);
+      font-weight: 700;
+    }
+
+    .weapon-head span:last-child { color: var(--muted); font-weight: 500; font-size: 12px; }
+
+    .wish-item {
+      display: grid;
+      grid-template-columns: 74px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(45,52,66,.7);
+    }
+
+    .wish-item:last-child { border-bottom: 0; }
+    .wish-item img { width: 74px; height: 46px; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0,0,0,.35)); }
+    .wish-title { font-size: 13px; font-weight: 650; line-height: 1.28; }
+    .wish-meta { margin-top: 3px; color: var(--muted); font-size: 11px; }
+
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: #11141c;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .icon-btn:hover { color: var(--danger); border-color: rgba(255,155,155,.3); }
+
+    .notice {
+      margin-top: 12px;
+      padding: 12px;
+      border: 1px solid rgba(159,179,255,.22);
+      background: rgba(159,179,255,.07);
+      border-radius: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%);
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      background: #11141c;
+      color: var(--text);
+      border-radius: 999px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
+      box-shadow: var(--shadow);
+      z-index: 10;
+    }
+
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+    .hidden { display: none !important; }
+
+    @media (max-width: 1050px) {
+      .layout { grid-template-columns: 1fr; }
+      .wishlist { position: static; }
+    }
+
+    @media (max-width: 740px) {
+      .app { width: min(100vw - 20px, 1480px); padding-top: 18px; }
+      .topbar { grid-template-columns: 1fr; }
+      .status { align-items: flex-start; }
+      .controls { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+      .card { min-height: 238px; }
+      .skin-img-wrap { height: 116px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <h1>CS2 Skin Wishlist</h1>
+        <p>
+          Простой wishlist без аккаунта и сервера. Список сохраняется только в браузере через localStorage.
+          Лимит: максимум 5 вариантов на одно оружие.
+        </p>
+      </div>
+      <div class="status">
+        <div class="pill"><span id="dataDot" class="dot"></span><span id="dataStatus">Загрузка базы…</span></div>
+        <div class="pill"><span id="wishCount">0</span> items in wishlist</div>
+      </div>
+    </header>
+
+    <section class="layout">
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>База скинов</h2>
+            <small id="resultInfo">ожидание данных</small>
+          </div>
+        </div>
+
+        <div class="controls">
+          <div class="field">
+            <label for="searchInput">Поиск</label>
+            <input id="searchInput" type="search" placeholder="AK-47 Redline, AWP Asiimov, Doppler…" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="categorySelect">Категория</label>
+            <select id="categorySelect"><option value="">Все категории</option></select>
+          </div>
+
+          <div class="field">
+            <label for="weaponSelect">Оружие</label>
+            <select id="weaponSelect"><option value="">Все оружие</option></select>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <button id="resetFiltersBtn" class="btn">Сбросить фильтры</button>
+          <button id="showMoreBtn" class="btn primary">Показать больше</button>
+        </div>
+
+        <div class="content">
+          <div id="skinsGrid" class="grid"></div>
+          <div id="emptySearch" class="empty hidden">Ничего не найдено.</div>
+        </div>
+      </section>
+
+      <aside class="panel wishlist">
+        <div class="panel-head">
+          <div>
+            <h2>Мой wishlist</h2>
+            <small>localStorage / без логина</small>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <button id="exportBtn" class="btn">Export JSON</button>
+          <label class="btn" for="importInput">Import JSON</label>
+          <input id="importInput" class="hidden" type="file" accept="application/json">
+          <button id="clearBtn" class="btn danger">Очистить</button>
+        </div>
+
+        <div class="content">
+          <div id="wishlist" class="wish-list"></div>
+          <div id="emptyWishlist" class="empty">Wishlist пустой.</div>
+          <div class="notice">Не клади API-ключи в frontend-код на GitHub Pages. Для платных API нужен backend/proxy.</div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    const DATA_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/skins.json";
+    const STORAGE_KEY = "cs2_skin_wishlist_v1";
+    const MAX_PER_WEAPON = 5;
+    const PAGE_SIZE = 80;
+
+    const state = {
+      allSkins: [],
+      filteredSkins: [],
+      wishlist: [],
+      visibleCount: PAGE_SIZE,
+      filters: { search: "", category: "", weapon: "" }
+    };
+
+    const els = {
+      dataDot: document.getElementById("dataDot"),
+      dataStatus: document.getElementById("dataStatus"),
+      wishCount: document.getElementById("wishCount"),
+      resultInfo: document.getElementById("resultInfo"),
+      searchInput: document.getElementById("searchInput"),
+      categorySelect: document.getElementById("categorySelect"),
+      weaponSelect: document.getElementById("weaponSelect"),
+      resetFiltersBtn: document.getElementById("resetFiltersBtn"),
+      showMoreBtn: document.getElementById("showMoreBtn"),
+      skinsGrid: document.getElementById("skinsGrid"),
+      emptySearch: document.getElementById("emptySearch"),
+      wishlist: document.getElementById("wishlist"),
+      emptyWishlist: document.getElementById("emptyWishlist"),
+      exportBtn: document.getElementById("exportBtn"),
+      importInput: document.getElementById("importInput"),
+      clearBtn: document.getElementById("clearBtn"),
+      toast: document.getElementById("toast")
+    };
+
+    function normalizeSkin(raw) {
+      return {
+        id: raw.id,
+        name: raw.name || "Unknown skin",
+        weapon: raw.weapon?.name || "Unknown",
+        weaponId: raw.weapon?.id || "unknown",
+        category: raw.category?.name || "Other",
+        rarity: raw.rarity?.name || "",
+        rarityColor: raw.rarity?.color || "#8b93a3",
+        image: raw.image || "",
+        minFloat: raw.min_float ?? null,
+        maxFloat: raw.max_float ?? null
+      };
+    }
+
+    function saveWishlist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.wishlist)); }
+
+    function loadWishlist() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        state.wishlist = stored ? JSON.parse(stored) : [];
+      } catch { state.wishlist = []; }
+    }
+
+    function showToast(message) {
+      els.toast.textContent = message;
+      els.toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => els.toast.classList.remove("show"), 1800);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function getWeaponCount(weaponId) { return state.wishlist.filter(item => item.weaponId === weaponId).length; }
+    function isInWishlist(id) { return state.wishlist.some(item => item.id === id); }
+
+    function addToWishlist(id) {
+      const skin = state.allSkins.find(item => item.id === id);
+      if (!skin) return;
+      if (isInWishlist(id)) { showToast("Уже добавлено"); return; }
+      if (getWeaponCount(skin.weaponId) >= MAX_PER_WEAPON) {
+        showToast(`Лимит: ${MAX_PER_WEAPON} вариантов для ${skin.weapon}`);
+        return;
+      }
+      state.wishlist.push(skin);
+      saveWishlist();
+      renderWishlist();
+      renderSkins();
+      showToast("Добавлено");
+    }
+
+    function removeFromWishlist(id) {
+      state.wishlist = state.wishlist.filter(item => item.id !== id);
+      saveWishlist();
+      renderWishlist();
+      renderSkins();
+      showToast("Удалено");
+    }
+
+    function clearWishlist() {
+      if (!state.wishlist.length) return;
+      const ok = confirm("Очистить весь wishlist?");
+      if (!ok) return;
+      state.wishlist = [];
+      saveWishlist();
+      renderWishlist();
+      renderSkins();
+      showToast("Wishlist очищен");
+    }
+
+    function populateFilters() {
+      const categories = [...new Set(state.allSkins.map(item => item.category))].sort();
+      const weapons = [...new Set(state.allSkins.map(item => item.weapon))].sort();
+      els.categorySelect.innerHTML = `<option value="">Все категории</option>` + categories.map(cat => `<option value="${escapeHtml(cat)}">${escapeHtml(cat)}</option>`).join("");
+      els.weaponSelect.innerHTML = `<option value="">Все оружие</option>` + weapons.map(weapon => `<option value="${escapeHtml(weapon)}">${escapeHtml(weapon)}</option>`).join("");
+    }
+
+    function applyFilters() {
+      const q = state.filters.search.trim().toLowerCase();
+      state.filteredSkins = state.allSkins.filter(item => {
+        const matchesSearch = !q || [item.name, item.weapon, item.category, item.rarity].join(" ").toLowerCase().includes(q);
+        const matchesCategory = !state.filters.category || item.category === state.filters.category;
+        const matchesWeapon = !state.filters.weapon || item.weapon === state.filters.weapon;
+        return matchesSearch && matchesCategory && matchesWeapon;
+      });
+      renderSkins();
+    }
+
+    function renderSkins() {
+      const visible = state.filteredSkins.slice(0, state.visibleCount);
+      els.skinsGrid.innerHTML = visible.map(item => {
+        const added = isInWishlist(item.id);
+        const weaponLimit = getWeaponCount(item.weaponId) >= MAX_PER_WEAPON;
+        const disabled = added || (!added && weaponLimit);
+        const btnText = added ? "В wishlist" : weaponLimit ? "Лимит оружия" : "Добавить";
+        const floatText = item.minFloat !== null && item.maxFloat !== null ? `Float: ${item.minFloat}–${item.maxFloat}` : "Float: —";
+        return `
+          <article class="card">
+            <div class="skin-img-wrap">${item.image ? `<img loading="lazy" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">` : ""}</div>
+            <div class="card-body">
+              <div class="skin-name">${escapeHtml(item.name)}</div>
+              <div class="meta">${escapeHtml(item.weapon)} · ${escapeHtml(item.category)}</div>
+              <div class="rarity" style="color:${escapeHtml(item.rarityColor)}">${escapeHtml(item.rarity || "Unknown rarity")}</div>
+              <div class="meta">${escapeHtml(floatText)}</div>
+              <div class="card-actions"><button class="btn primary" ${disabled ? "disabled" : ""} data-add="${escapeHtml(item.id)}">${escapeHtml(btnText)}</button></div>
+            </div>
+          </article>`;
+      }).join("");
+
+      els.emptySearch.classList.toggle("hidden", state.filteredSkins.length !== 0);
+      els.showMoreBtn.disabled = state.visibleCount >= state.filteredSkins.length;
+      els.resultInfo.textContent = `${state.filteredSkins.length} найдено · показано ${visible.length}`;
+      els.skinsGrid.querySelectorAll("[data-add]").forEach(btn => btn.addEventListener("click", () => addToWishlist(btn.dataset.add)));
+    }
+
+    function groupWishlistByWeapon() {
+      const groups = new Map();
+      for (const item of state.wishlist) {
+        if (!groups.has(item.weapon)) groups.set(item.weapon, []);
+        groups.get(item.weapon).push(item);
+      }
+      return [...groups.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+    }
+
+    function renderWishlist() {
+      els.wishCount.textContent = String(state.wishlist.length);
+      els.emptyWishlist.classList.toggle("hidden", state.wishlist.length !== 0);
+      const groups = groupWishlistByWeapon();
+      els.wishlist.innerHTML = groups.map(([weapon, items]) => `
+        <section class="weapon-group">
+          <div class="weapon-head"><span>${escapeHtml(weapon)}</span><span>${items.length}/${MAX_PER_WEAPON}</span></div>
+          ${items.map(item => `
+            <div class="wish-item">
+              <img loading="lazy" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">
+              <div><div class="wish-title">${escapeHtml(item.name)}</div><div class="wish-meta">${escapeHtml(item.rarity || "Unknown rarity")}</div></div>
+              <button class="icon-btn" title="Удалить" data-remove="${escapeHtml(item.id)}">×</button>
+            </div>`).join("")}
+        </section>`).join("");
+      els.wishlist.querySelectorAll("[data-remove]").forEach(btn => btn.addEventListener("click", () => removeFromWishlist(btn.dataset.remove)));
+    }
+
+    function exportWishlist() {
+      const payload = { app: "CS2 Skin Wishlist", version: 1, exportedAt: new Date().toISOString(), maxPerWeapon: MAX_PER_WEAPON, items: state.wishlist };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "cs2-skin-wishlist.json";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function importWishlist(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const parsed = JSON.parse(reader.result);
+          const items = Array.isArray(parsed) ? parsed : parsed.items;
+          if (!Array.isArray(items)) throw new Error("Invalid format");
+          const next = [];
+          for (const item of items) {
+            const normalized = normalizeSkin(item);
+            if (next.some(x => x.id === normalized.id)) continue;
+            if (next.filter(x => x.weaponId === normalized.weaponId).length >= MAX_PER_WEAPON) continue;
+            next.push(normalized);
+          }
+          state.wishlist = next;
+          saveWishlist();
+          renderWishlist();
+          renderSkins();
+          showToast("Import готов");
+        } catch { alert("Не удалось импортировать JSON."); }
+      };
+      reader.readAsText(file);
+      els.importInput.value = "";
+    }
+
+    function bindEvents() {
+      els.searchInput.addEventListener("input", () => { state.filters.search = els.searchInput.value; state.visibleCount = PAGE_SIZE; applyFilters(); });
+      els.categorySelect.addEventListener("change", () => { state.filters.category = els.categorySelect.value; state.visibleCount = PAGE_SIZE; applyFilters(); });
+      els.weaponSelect.addEventListener("change", () => { state.filters.weapon = els.weaponSelect.value; state.visibleCount = PAGE_SIZE; applyFilters(); });
+      els.resetFiltersBtn.addEventListener("click", () => {
+        state.filters = { search: "", category: "", weapon: "" };
+        state.visibleCount = PAGE_SIZE;
+        els.searchInput.value = "";
+        els.categorySelect.value = "";
+        els.weaponSelect.value = "";
+        applyFilters();
+      });
+      els.showMoreBtn.addEventListener("click", () => { state.visibleCount += PAGE_SIZE; renderSkins(); });
+      els.exportBtn.addEventListener("click", exportWishlist);
+      els.importInput.addEventListener("change", () => importWishlist(els.importInput.files[0]));
+      els.clearBtn.addEventListener("click", clearWishlist);
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch(DATA_URL, { cache: "force-cache" });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const raw = await res.json();
+        state.allSkins = raw
+          .map(normalizeSkin)
+          .filter(item => item.id && item.image && item.weapon !== "Unknown")
+          .sort((a, b) => a.weapon.localeCompare(b.weapon) || a.name.localeCompare(b.name));
+        state.filteredSkins = [...state.allSkins];
+        els.dataDot.classList.add("ok");
+        els.dataStatus.textContent = `${state.allSkins.length} skins loaded`;
+        populateFilters();
+        applyFilters();
+      } catch (err) {
+        els.dataDot.classList.add("bad");
+        els.dataStatus.textContent = "Ошибка загрузки базы";
+        els.resultInfo.textContent = "База не загрузилась";
+        els.emptySearch.classList.remove("hidden");
+        els.emptySearch.textContent = "Не удалось загрузить skins.json. Проверь интернет или CORS.";
+        console.error(err);
+      }
+    }
+
+    loadWishlist();
+    bindEvents();
+    renderWishlist();
+    loadData();
+  </script>
+</body>
+</html>
