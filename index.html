@@ -122,7 +122,7 @@
 
     .controls {
       display: grid;
-      grid-template-columns: 1.2fr .8fr .8fr;
+      grid-template-columns: 1.2fr .8fr;
       gap: 10px;
       padding: 18px;
       border-bottom: 1px solid var(--line);
@@ -263,6 +263,52 @@
 
     .weapon-head span:last-child { color: var(--muted); font-weight: 500; font-size: 12px; }
 
+
+    .count-partial,
+    .count-complete {
+      display: inline-block;
+      margin-left: .35em;
+    }
+
+    .weapon-head {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font: inherit;
+      text-align: left;
+    }
+
+    .weapon-head:hover {
+      background: rgba(255,255,255,.025);
+    }
+
+    .weapon-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .collapse-icon {
+      width: 14px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1;
+    }
+
+    .wish-items {
+      display: block;
+    }
+
+    .weapon-group.collapsed .wish-items {
+      display: none;
+    }
+
+    .weapon-group.collapsed .weapon-head {
+      border-bottom: 0;
+    }
+
     .wish-item {
       display: grid;
       grid-template-columns: 74px 1fr auto;
@@ -276,6 +322,37 @@
     .wish-item img { width: 74px; height: 46px; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0,0,0,.35)); }
     .wish-title { font-size: 13px; font-weight: 650; line-height: 1.28; }
     .wish-meta { margin-top: 3px; color: var(--muted); font-size: 11px; }
+
+
+    .wish-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 7px;
+    }
+
+    .mini-btn {
+      border: 1px solid var(--line);
+      color: var(--soft);
+      background: #11141c;
+      border-radius: 9px;
+      padding: 5px 8px;
+      cursor: pointer;
+      font-size: 11px;
+      line-height: 1.2;
+    }
+
+    .mini-btn:hover {
+      border-color: rgba(159,179,255,.4);
+      color: var(--text);
+      background: #181c26;
+    }
+
+    .mini-btn:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+      border-style: dashed;
+    }
 
     .icon-btn {
       width: 34px;
@@ -317,6 +394,46 @@
       z-index: 10;
     }
 
+
+
+    .count-partial {
+      color: var(--danger);
+      font-weight: 750;
+    }
+
+    .count-complete {
+      color: var(--ok);
+      font-weight: 750;
+    }
+
+    .toolbar-info {
+      display: inline-flex;
+      align-items: center;
+      color: var(--muted);
+      font-size: 14px;
+      padding: 0 4px;
+      min-height: 42px;
+    }
+
+    @media (max-width: 740px) {
+  
+    .count-partial {
+      color: var(--danger);
+      font-weight: 750;
+    }
+
+    .count-complete {
+      color: var(--ok);
+      font-weight: 750;
+    }
+
+    .toolbar-info {
+        width: 100%;
+        min-height: 0;
+        padding-top: 2px;
+      }
+    }
+
     .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
     .hidden { display: none !important; }
 
@@ -334,6 +451,61 @@
       .card { min-height: 238px; }
       .skin-img-wrap { height: 116px; }
     }
+  
+    /* v7: hard image clamp.
+       Some knife/glove PNGs have large transparent/visual bounds and can overlap text.
+       These overrides force the image to stay inside its own area. */
+    .card {
+      position: relative !important;
+      overflow: hidden !important;
+    }
+
+    .skin-img-wrap {
+      height: 118px !important;
+      max-height: 118px !important;
+      flex: 0 0 118px !important;
+      overflow: hidden !important;
+      position: relative !important;
+      z-index: 1 !important;
+      padding: 10px 16px !important;
+      isolation: isolate !important;
+    }
+
+    .skin-img-wrap img {
+      max-width: 88% !important;
+      max-height: 94px !important;
+      width: auto !important;
+      height: auto !important;
+      object-fit: contain !important;
+      display: block !important;
+      pointer-events: none !important;
+      user-select: none !important;
+      transform: scale(.9) !important;
+      transform-origin: center center !important;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,.35)) !important;
+    }
+
+    .card-body {
+      position: relative !important;
+      z-index: 5 !important;
+      background: linear-gradient(180deg, rgba(24,27,34,1), rgba(18,21,29,1)) !important;
+      border-top: 1px solid var(--line) !important;
+    }
+
+    @media (max-width: 740px) {
+      .skin-img-wrap {
+        height: 104px !important;
+        max-height: 104px !important;
+        flex-basis: 104px !important;
+      }
+
+      .skin-img-wrap img {
+        max-height: 78px !important;
+        max-width: 84% !important;
+        transform: scale(.84) !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -358,11 +530,6 @@
           </div>
 
           <div class="field">
-            <label for="categorySelect">Категория</label>
-            <select id="categorySelect"><option value="">Все категории</option></select>
-          </div>
-
-          <div class="field">
             <label for="weaponSelect">Оружие</label>
             <select id="weaponSelect"><option value="">Все оружие</option></select>
           </div>
@@ -371,6 +538,7 @@
         <div class="toolbar">
           <button id="resetFiltersBtn" class="btn">Сбросить фильтры</button>
           <button id="showMoreBtn" class="btn primary">Показать больше</button>
+          <span id="resultInfo" class="toolbar-info">Загрузка базы…</span>
         </div>
 
         <div class="content">
@@ -395,12 +563,14 @@
     const DATA_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/skins.json";
     const STORAGE_KEY = "cs2_skin_wishlist_v1";
     const MAX_PER_WEAPON = 5;
+    const MAX_PER_SPECIAL_GROUP = 10;
     const PAGE_SIZE = 80;
 
     const state = {
       allSkins: [],
       filteredSkins: [],
       wishlist: [],
+      collapsedGroups: new Set(),
       visibleCount: PAGE_SIZE,
       filters: { search: "", category: "", weapon: "" }
     };
@@ -411,7 +581,6 @@
       wishCount: document.getElementById("wishCount"),
       resultInfo: document.getElementById("resultInfo"),
       searchInput: document.getElementById("searchInput"),
-      categorySelect: document.getElementById("categorySelect"),
       weaponSelect: document.getElementById("weaponSelect"),
       resetFiltersBtn: document.getElementById("resetFiltersBtn"),
       showMoreBtn: document.getElementById("showMoreBtn"),
@@ -434,9 +603,10 @@
         category: raw.category?.name || "Other",
         rarity: raw.rarity?.name || "",
         rarityColor: raw.rarity?.color || "#8b93a3",
-        image: raw.image || "",
+        image: raw.image || raw.image_url || raw.image_url_steam || "",
         minFloat: raw.min_float ?? null,
-        maxFloat: raw.max_float ?? null
+        maxFloat: raw.max_float ?? null,
+        paintIndex: raw.paint_index ?? raw.paintIndex ?? raw.paintindex ?? null
       };
     }
 
@@ -465,17 +635,41 @@
         .replaceAll("'", "&#039;");
     }
 
-    function getWeaponCount(weaponId) { return state.wishlist.filter(item => item.weaponId === weaponId).length; }
+    function getWishlistGroupKey(item) {
+      if (item.category === "Knives") return "Knives";
+      if (item.category === "Gloves") return "Gloves";
+      return item.weapon;
+    }
+
+    function getWishlistGroupLimit(groupKey) {
+      return groupKey === "Knives" || groupKey === "Gloves"
+        ? MAX_PER_SPECIAL_GROUP
+        : MAX_PER_WEAPON;
+    }
+
+    function getWishlistGroupCount(groupKey) {
+      return state.wishlist.filter(item => getWishlistGroupKey(item) === groupKey).length;
+    }
+
     function isInWishlist(id) { return state.wishlist.some(item => item.id === id); }
 
     function addToWishlist(id) {
       const skin = state.allSkins.find(item => item.id === id);
       if (!skin) return;
-      if (isInWishlist(id)) { showToast("Уже добавлено"); return; }
-      if (getWeaponCount(skin.weaponId) >= MAX_PER_WEAPON) {
-        showToast(`Лимит: ${MAX_PER_WEAPON} вариантов для ${skin.weapon}`);
+
+      if (isInWishlist(id)) {
+        showToast("Уже добавлено");
         return;
       }
+
+      const groupKey = getWishlistGroupKey(skin);
+      const groupLimit = getWishlistGroupLimit(groupKey);
+
+      if (getWishlistGroupCount(groupKey) >= groupLimit) {
+        showToast(`Лимит: ${groupLimit} вариантов для ${groupKey}`);
+        return;
+      }
+
       state.wishlist.push(skin);
       saveWishlist();
       renderWishlist();
@@ -491,6 +685,313 @@
       showToast("Удалено");
     }
 
+    const DEF_INDEX_BY_WEAPON = {
+      "Desert Eagle": 1,
+      "Dual Berettas": 2,
+      "Five-SeveN": 3,
+      "Glock-18": 4,
+      "AK-47": 7,
+      "AUG": 8,
+      "AWP": 9,
+      "FAMAS": 10,
+      "G3SG1": 11,
+      "Galil AR": 13,
+      "M249": 14,
+      "M4A4": 16,
+      "MAC-10": 17,
+      "P90": 19,
+      "MP5-SD": 23,
+      "UMP-45": 24,
+      "XM1014": 25,
+      "PP-Bizon": 26,
+      "MAG-7": 27,
+      "Negev": 28,
+      "Sawed-Off": 29,
+      "Tec-9": 30,
+      "Zeus x27": 31,
+      "P2000": 32,
+      "MP7": 33,
+      "MP9": 34,
+      "Nova": 35,
+      "P250": 36,
+      "SCAR-20": 38,
+      "SG 553": 39,
+      "SSG 08": 40,
+      "M4A1-S": 60,
+      "USP-S": 61,
+      "CZ75-Auto": 63,
+      "R8 Revolver": 64,
+
+      "Bayonet": 500,
+      "Classic Knife": 503,
+      "Flip Knife": 505,
+      "Gut Knife": 506,
+      "Karambit": 507,
+      "M9 Bayonet": 508,
+      "Huntsman Knife": 509,
+      "Falchion Knife": 512,
+      "Bowie Knife": 514,
+      "Butterfly Knife": 515,
+      "Shadow Daggers": 516,
+      "Paracord Knife": 517,
+      "Survival Knife": 518,
+      "Ursus Knife": 519,
+      "Navaja Knife": 520,
+      "Nomad Knife": 521,
+      "Stiletto Knife": 522,
+      "Talon Knife": 523,
+      "Skeleton Knife": 525,
+      "Kukri Knife": 526,
+
+      "Bloodhound Gloves": 5027,
+      "Sport Gloves": 5030,
+      "Driver Gloves": 5031,
+      "Hand Wraps": 5032,
+      "Moto Gloves": 5033,
+      "Specialist Gloves": 5034,
+      "Hydra Gloves": 5035,
+      "Broken Fang Gloves": 4725
+    };
+
+    const RARITY_VALUE_BY_NAME = {
+      "Consumer Grade": 1,
+      "Base Grade": 1,
+      "Industrial Grade": 2,
+      "Mil-Spec Grade": 3,
+      "Restricted": 4,
+      "Classified": 5,
+      "Covert": 6,
+      "Extraordinary": 6,
+      "Contraband": 7
+    };
+
+    let crcTable = null;
+
+    function getCrcTable() {
+      if (crcTable) return crcTable;
+
+      crcTable = new Uint32Array(256);
+
+      for (let n = 0; n < 256; n++) {
+        let c = n;
+
+        for (let k = 0; k < 8; k++) {
+          c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+        }
+
+        crcTable[n] = c >>> 0;
+      }
+
+      return crcTable;
+    }
+
+    function crc32(bytes) {
+      const table = getCrcTable();
+      let crc = 0 ^ -1;
+
+      for (let i = 0; i < bytes.length; i++) {
+        crc = (crc >>> 8) ^ table[(crc ^ bytes[i]) & 0xFF];
+      }
+
+      return (crc ^ -1) >>> 0;
+    }
+
+    function encodeVarint(value) {
+      let n = Number(value) >>> 0;
+      const out = [];
+
+      while (n >= 0x80) {
+        out.push((n & 0x7F) | 0x80);
+        n = n >>> 7;
+      }
+
+      out.push(n);
+      return out;
+    }
+
+    function encodeField(fieldNumber, value) {
+      return [
+        ...encodeVarint((fieldNumber << 3) | 0),
+        ...encodeVarint(value)
+      ];
+    }
+
+    function floatToUint32(value) {
+      const buffer = new ArrayBuffer(4);
+      const view = new DataView(buffer);
+      view.setFloat32(0, Number(value), true);
+      return view.getUint32(0, true);
+    }
+
+    function uint32ToBigEndianBytes(value) {
+      return [
+        (value >>> 24) & 0xFF,
+        (value >>> 16) & 0xFF,
+        (value >>> 8) & 0xFF,
+        value & 0xFF
+      ];
+    }
+
+    function bytesToHex(bytes) {
+      return Array.from(bytes)
+        .map(byte => byte.toString(16).padStart(2, "0"))
+        .join("")
+        .toUpperCase();
+    }
+
+    function getDefIndex(item) {
+      return DEF_INDEX_BY_WEAPON[item.weapon] || null;
+    }
+
+    function isVanillaKnife(item) {
+      return item.category === "Knives" && (
+        item.paintIndex === null ||
+        item.paintIndex === undefined ||
+        item.paintIndex === "" ||
+        Number(item.paintIndex) === 0
+      );
+    }
+
+    function getPaintIndex(item) {
+      const value = Number(item.paintIndex);
+
+      if (Number.isFinite(value) && value > 0) {
+        return Math.trunc(value);
+      }
+
+      if (isVanillaKnife(item)) {
+        return 0;
+      }
+
+      return null;
+    }
+
+    function getRarityValue(item) {
+      if (RARITY_VALUE_BY_NAME[item.rarity]) return RARITY_VALUE_BY_NAME[item.rarity];
+      if (item.category === "Knives" || item.category === "Gloves") return 6;
+      return 4;
+    }
+
+    function getDefaultWear(item) {
+      if (isVanillaKnife(item)) {
+        return 0;
+      }
+
+      const min = Number(item.minFloat);
+      const max = Number(item.maxFloat);
+
+      let wear = Number.isFinite(min) ? min : 0;
+
+      if (wear <= 0) wear = 0.001;
+      if (Number.isFinite(max) && wear > max) wear = max;
+      if (Number.isFinite(min) && wear < min) wear = min;
+
+      return Number(wear.toFixed(6));
+    }
+
+    function canGenerateInspect(item) {
+      const defindex = getDefIndex(item);
+      const paintindex = getPaintIndex(item);
+
+      return Boolean(defindex !== null && defindex !== undefined && paintindex !== null && paintindex !== undefined);
+    }
+
+    function generateInspectHex(item) {
+      const defindex = getDefIndex(item);
+      const paintindex = getPaintIndex(item);
+      const rarity = getRarityValue(item);
+      const quality = 4;
+      const paintwear = floatToUint32(getDefaultWear(item));
+      const paintseed = 0;
+
+      const proto = [
+        ...encodeField(3, defindex),
+        ...encodeField(4, paintindex),
+        ...encodeField(5, rarity),
+        ...encodeField(6, quality),
+        ...encodeField(7, paintwear),
+        ...encodeField(8, paintseed)
+      ];
+
+      const buffer = new Uint8Array(1 + proto.length);
+      buffer[0] = 0;
+      buffer.set(proto, 1);
+
+      const crc = crc32(buffer);
+      const xoredCrc = (((crc & 0xFFFF) ^ Math.imul(proto.length, crc)) >>> 0);
+      const finalBuffer = new Uint8Array(buffer.length + 4);
+
+      finalBuffer.set(buffer);
+      finalBuffer.set(uint32ToBigEndianBytes(xoredCrc), buffer.length);
+
+      return bytesToHex(finalBuffer);
+    }
+
+    function generateInspectLink(item) {
+      return `steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20${generateInspectHex(item)}`;
+    }
+
+    function generateConsoleCommand(item) {
+      const defindex = getDefIndex(item);
+      const paintindex = getPaintIndex(item);
+      const wear = getDefaultWear(item);
+
+      if (defindex === null || defindex === undefined || paintindex === null || paintindex === undefined) return "";
+
+      if (item.category === "Gloves") {
+        return `!gengl ${defindex} ${paintindex} 0 ${wear}`;
+      }
+
+      return `!g ${defindex} ${paintindex} 0 ${wear}`;
+    }
+
+    function copyText(value) {
+      if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(value);
+      }
+
+      const textarea = document.createElement("textarea");
+      textarea.value = value;
+      textarea.style.position = "fixed";
+      textarea.style.left = "-9999px";
+      document.body.appendChild(textarea);
+      textarea.focus();
+      textarea.select();
+
+      try {
+        document.execCommand("copy");
+        return Promise.resolve();
+      } catch {
+        return Promise.reject();
+      } finally {
+        textarea.remove();
+      }
+    }
+
+    function openInGamePreview(id) {
+      const item = state.wishlist.find(item => item.id === id);
+      if (!item || !canGenerateInspect(item)) {
+        showToast("Нет данных для inspect");
+        return;
+      }
+
+      window.location.href = generateInspectLink(item);
+    }
+
+    function copyConsoleCommand(id) {
+      const item = state.wishlist.find(item => item.id === id);
+      if (!item || !canGenerateInspect(item)) {
+        showToast("Нет данных для команды");
+        return;
+      }
+
+      const command = generateConsoleCommand(item);
+
+      copyText(command)
+        .then(() => showToast(`Скопировано: ${command}`))
+        .catch(() => alert("Не удалось скопировать. Скопируй вручную:\\n\\n" + command));
+    }
+
     function clearWishlist() {
       if (!state.wishlist.length) return;
       const ok = confirm("Очистить весь wishlist?");
@@ -503,20 +1004,185 @@
     }
 
     function populateFilters() {
-      const categories = [...new Set(state.allSkins.map(item => item.category))].sort();
-      const weapons = [...new Set(state.allSkins.map(item => item.weapon))].sort();
-      els.categorySelect.innerHTML = `<option value="">Все категории</option>` + categories.map(cat => `<option value="${escapeHtml(cat)}">${escapeHtml(cat)}</option>`).join("");
-      els.weaponSelect.innerHTML = `<option value="">Все оружие</option>` + weapons.map(weapon => `<option value="${escapeHtml(weapon)}">${escapeHtml(weapon)}</option>`).join("");
+      const weaponGroups = [
+        {
+          label: "Gloves",
+          category: "Gloves",
+          weapons: [
+            ["Bloodhound Gloves", "Bloodhound"],
+            ["Broken Fang Gloves", "Broken Fang"],
+            ["Driver Gloves", "Driver"],
+            ["Hand Wraps", "Hand Wraps"],
+            ["Hydra Gloves", "Hydra"],
+            ["Moto Gloves", "Moto"],
+            ["Specialist Gloves", "Specialist"],
+            ["Sport Gloves", "Sport"]
+          ]
+        },
+        {
+          label: "Knives",
+          category: "Knives",
+          weapons: [
+            ["Bayonet", "Bayonet"],
+            ["Bowie Knife", "Bowie"],
+            ["Butterfly Knife", "Butterfly"],
+            ["Classic Knife", "Classic"],
+            ["Falchion Knife", "Falchion"],
+            ["Flip Knife", "Flip"],
+            ["Gut Knife", "Gut"],
+            ["Huntsman Knife", "Huntsman"],
+            ["Karambit", "Karambit"],
+            ["Kukri Knife", "Kukri"],
+            ["M9 Bayonet", "M9 Bayonet"],
+            ["Navaja Knife", "Navaja"],
+            ["Nomad Knife", "Nomad"],
+            ["Paracord Knife", "Paracord"],
+            ["Shadow Daggers", "Shadow Daggers"],
+            ["Skeleton Knife", "Skeleton"],
+            ["Stiletto Knife", "Stiletto"],
+            ["Survival Knife", "Survival"],
+            ["Talon Knife", "Talon"],
+            ["Ursus Knife", "Ursus"]
+          ]
+        },
+        {
+          label: "Rifles",
+          category: "Rifles",
+          weapons: [
+            ["AK-47", "AK-47"],
+            ["AUG", "AUG"],
+            ["FAMAS", "FAMAS"],
+            ["Galil AR", "Galil AR"],
+            ["M4A1-S", "M4A1-S"],
+            ["M4A4", "M4A4"],
+            ["SG 553", "SG 553"]
+          ]
+        },
+        {
+          label: "Snipers",
+          category: "Sniper Rifles",
+          weapons: [
+            ["AWP", "AWP"],
+            ["G3SG1", "G3SG1"],
+            ["SCAR-20", "SCAR-20"],
+            ["SSG 08", "SSG 08"]
+          ]
+        },
+        {
+          label: "SMG",
+          category: "SMGs",
+          weapons: [
+            ["MAC-10", "MAC-10"],
+            ["MP5-SD", "MP5-SD"],
+            ["MP7", "MP7"],
+            ["MP9", "MP9"],
+            ["P90", "P90"],
+            ["PP-Bizon", "PP-Bizon"],
+            ["UMP-45", "UMP-45"]
+          ]
+        },
+        {
+          label: "Pistols",
+          category: "Pistols",
+          weapons: [
+            ["CZ75-Auto", "CZ75-Auto"],
+            ["Desert Eagle", "Desert Eagle"],
+            ["Dual Berettas", "Dual Berettas"],
+            ["Five-SeveN", "Five-SeveN"],
+            ["Glock-18", "Glock-18"],
+            ["P2000", "P2000"],
+            ["P250", "P250"],
+            ["R8 Revolver", "R8 Revolver"],
+            ["Tec-9", "Tec-9"],
+            ["USP-S", "USP-S"]
+          ]
+        },
+        {
+          label: "Heavy",
+          category: "Heavy",
+          weapons: [
+            ["MAG-7", "MAG-7"],
+            ["Nova", "Nova"],
+            ["Sawed-Off", "Sawed-Off"],
+            ["XM1014", "XM1014"],
+            ["M249", "M249"],
+            ["Negev", "Negev"]
+          ]
+        }
+      ];
+
+      const existingWeapons = new Set(state.allSkins.map(item => item.weapon));
+      const existingCategories = new Set(state.allSkins.map(item => item.category));
+
+      let html = `<option value="">Все оружие</option>`;
+
+      for (const group of weaponGroups) {
+        const availableWeapons = group.weapons.filter(([weapon]) => existingWeapons.has(weapon));
+        const hasCategory = existingCategories.has(group.category);
+
+        if (!hasCategory && availableWeapons.length === 0) continue;
+
+        if (hasCategory) {
+          html += `<option class="group-option" value="category:${escapeHtml(group.category)}">${escapeHtml(group.label)}</option>`;
+        }
+
+        html += availableWeapons
+          .map(([weapon, label]) => `<option value="weapon:${escapeHtml(weapon)}">&nbsp;&nbsp;${escapeHtml(label)}</option>`)
+          .join("");
+      }
+
+      if (existingWeapons.has("Zeus x27")) {
+        html += `<option class="group-option" value="weapon:Zeus x27">Zeus x27</option>`;
+      }
+
+      els.weaponSelect.innerHTML = html;
+    }
+
+    function parseWeaponFilter(value) {
+      if (!value) return { type: "", name: "" };
+      const separatorIndex = value.indexOf(":");
+      if (separatorIndex === -1) return { type: "weapon", name: value };
+      return {
+        type: value.slice(0, separatorIndex),
+        name: value.slice(separatorIndex + 1)
+      };
+    }
+
+    function isAllowedSkin(item) {
+      if (item.category === "Equipment") {
+        return item.weapon === "Zeus x27";
+      }
+
+      return item.category !== "Equipment";
     }
 
     function applyFilters() {
       const q = state.filters.search.trim().toLowerCase();
+      const selected = parseWeaponFilter(state.filters.weapon);
+
       state.filteredSkins = state.allSkins.filter(item => {
-        const matchesSearch = !q || [item.name, item.weapon, item.category, item.rarity].join(" ").toLowerCase().includes(q);
-        const matchesCategory = !state.filters.category || item.category === state.filters.category;
-        const matchesWeapon = !state.filters.weapon || item.weapon === state.filters.weapon;
-        return matchesSearch && matchesCategory && matchesWeapon;
+        if (!isAllowedSkin(item)) return false;
+
+        const matchesSearch = !q || [
+          item.name,
+          item.weapon,
+          item.category,
+          item.rarity
+        ].join(" ").toLowerCase().includes(q);
+
+        let matchesWeapon = true;
+
+        if (selected.type === "weapon") {
+          matchesWeapon = item.weapon === selected.name;
+        }
+
+        if (selected.type === "category") {
+          matchesWeapon = item.category === selected.name;
+        }
+
+        return matchesSearch && matchesWeapon;
       });
+
       renderSkins();
     }
 
@@ -524,9 +1190,11 @@
       const visible = state.filteredSkins.slice(0, state.visibleCount);
       els.skinsGrid.innerHTML = visible.map(item => {
         const added = isInWishlist(item.id);
-        const weaponLimit = getWeaponCount(item.weaponId) >= MAX_PER_WEAPON;
-        const disabled = added || (!added && weaponLimit);
-        const btnText = added ? "В wishlist" : weaponLimit ? "Лимит оружия" : "Добавить";
+        const groupKey = getWishlistGroupKey(item);
+        const groupLimit = getWishlistGroupLimit(groupKey);
+        const groupFull = getWishlistGroupCount(groupKey) >= groupLimit;
+        const disabled = added || (!added && groupFull);
+        const btnText = added ? "В wishlist" : groupFull ? "Лимит" : "Добавить";
         const floatText = item.minFloat !== null && item.maxFloat !== null ? `Float: ${item.minFloat}–${item.maxFloat}` : "Float: —";
         return `
           <article class="card">
@@ -543,38 +1211,112 @@
 
       els.emptySearch.classList.toggle("hidden", state.filteredSkins.length !== 0);
       els.showMoreBtn.disabled = state.visibleCount >= state.filteredSkins.length;
-      if (els.resultInfo) els.resultInfo.textContent = `${state.filteredSkins.length} найдено · показано ${visible.length}`;
+      if (els.resultInfo) {
+        const isComplete = visible.length >= state.filteredSkins.length;
+        els.resultInfo.innerHTML = `${state.filteredSkins.length} найдено · показано&nbsp;<span class="${isComplete ? "count-complete" : "count-partial"}">${visible.length}</span>`;
+      }
       els.skinsGrid.querySelectorAll("[data-add]").forEach(btn => btn.addEventListener("click", () => addToWishlist(btn.dataset.add)));
     }
 
-    function groupWishlistByWeapon() {
+    function groupWishlist() {
       const groups = new Map();
+
       for (const item of state.wishlist) {
-        if (!groups.has(item.weapon)) groups.set(item.weapon, []);
-        groups.get(item.weapon).push(item);
+        const key = getWishlistGroupKey(item);
+
+        if (!groups.has(key)) {
+          groups.set(key, { key, label: key, items: [] });
+        }
+
+        groups.get(key).items.push(item);
       }
-      return [...groups.entries()].sort((a, b) => a[0].localeCompare(b[0]));
+
+      const order = ["Gloves", "Knives"];
+      return [...groups.values()].sort((a, b) => {
+        const ai = order.indexOf(a.key);
+        const bi = order.indexOf(b.key);
+
+        if (ai !== -1 || bi !== -1) {
+          if (ai === -1) return 1;
+          if (bi === -1) return -1;
+          return ai - bi;
+        }
+
+        return a.label.localeCompare(b.label);
+      });
+    }
+
+    function toggleWishlistGroup(key) {
+      if (state.collapsedGroups.has(key)) {
+        state.collapsedGroups.delete(key);
+      } else {
+        state.collapsedGroups.add(key);
+      }
+
+      renderWishlist();
     }
 
     function renderWishlist() {
       els.wishCount.textContent = String(state.wishlist.length);
       els.emptyWishlist.classList.toggle("hidden", state.wishlist.length !== 0);
-      const groups = groupWishlistByWeapon();
-      els.wishlist.innerHTML = groups.map(([weapon, items]) => `
-        <section class="weapon-group">
-          <div class="weapon-head"><span>${escapeHtml(weapon)}</span><span>${items.length}/${MAX_PER_WEAPON}</span></div>
-          ${items.map(item => `
-            <div class="wish-item">
-              <img loading="lazy" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">
-              <div><div class="wish-title">${escapeHtml(item.name)}</div><div class="wish-meta">${escapeHtml(item.rarity || "Unknown rarity")}</div></div>
-              <button class="icon-btn" title="Удалить" data-remove="${escapeHtml(item.id)}">×</button>
-            </div>`).join("")}
-        </section>`).join("");
-      els.wishlist.querySelectorAll("[data-remove]").forEach(btn => btn.addEventListener("click", () => removeFromWishlist(btn.dataset.remove)));
+
+      const groups = groupWishlist();
+
+      els.wishlist.innerHTML = groups.map(group => {
+        const collapsed = state.collapsedGroups.has(group.key);
+        const limit = getWishlistGroupLimit(group.key);
+        const icon = collapsed ? "▶" : "▼";
+
+        return `
+          <section class="weapon-group ${collapsed ? "collapsed" : ""}">
+            <button class="weapon-head" type="button" data-toggle-group="${escapeHtml(group.key)}" aria-expanded="${collapsed ? "false" : "true"}">
+              <span class="weapon-title"><span class="collapse-icon">${icon}</span>${escapeHtml(group.label)}</span>
+              <span>${group.items.length}/${limit}</span>
+            </button>
+
+            <div class="wish-items">
+              ${group.items.map(item => `
+                <div class="wish-item">
+                  <img loading="lazy" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">
+                  <div>
+                    <div class="wish-title">${escapeHtml(item.name)}</div>
+                    <div class="wish-meta">${escapeHtml(item.rarity || "Unknown rarity")}</div>
+                    <div class="wish-actions">
+                      <button class="mini-btn" type="button" data-ingame="${escapeHtml(item.id)}" ${canGenerateInspect(item) ? "" : "disabled"}>In game</button>
+                      <button class="mini-btn" type="button" data-copy-command="${escapeHtml(item.id)}" ${canGenerateInspect(item) ? "" : "disabled"}>${item.category === "Gloves" ? "Copy !gengl" : "Copy !g"}</button>
+                    </div>
+                  </div>
+                  <button class="icon-btn" title="Удалить" data-remove="${escapeHtml(item.id)}">×</button>
+                </div>`).join("")}
+            </div>
+          </section>`;
+      }).join("");
+
+      els.wishlist.querySelectorAll("[data-remove]").forEach(btn => {
+        btn.addEventListener("click", () => removeFromWishlist(btn.dataset.remove));
+      });
+
+      els.wishlist.querySelectorAll("[data-ingame]").forEach(btn => {
+        btn.addEventListener("click", event => {
+          event.stopPropagation();
+          openInGamePreview(btn.dataset.ingame);
+        });
+      });
+
+      els.wishlist.querySelectorAll("[data-copy-command]").forEach(btn => {
+        btn.addEventListener("click", event => {
+          event.stopPropagation();
+          copyConsoleCommand(btn.dataset.copyCommand);
+        });
+      });
+
+      els.wishlist.querySelectorAll("[data-toggle-group]").forEach(btn => {
+        btn.addEventListener("click", () => toggleWishlistGroup(btn.dataset.toggleGroup));
+      });
     }
 
     function exportWishlist() {
-      const payload = { app: "CS2 Skin Wishlist", version: 1, exportedAt: new Date().toISOString(), maxPerWeapon: MAX_PER_WEAPON, items: state.wishlist };
+      const payload = { app: "CS2 Skin Wishlist", version: 1, exportedAt: new Date().toISOString(), maxPerWeapon: MAX_PER_WEAPON, maxPerSpecialGroup: MAX_PER_SPECIAL_GROUP, items: state.wishlist };
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -598,7 +1340,8 @@
           for (const item of items) {
             const normalized = normalizeSkin(item);
             if (next.some(x => x.id === normalized.id)) continue;
-            if (next.filter(x => x.weaponId === normalized.weaponId).length >= MAX_PER_WEAPON) continue;
+            const groupKey = getWishlistGroupKey(normalized);
+            if (next.filter(x => getWishlistGroupKey(x) === groupKey).length >= getWishlistGroupLimit(groupKey)) continue;
             next.push(normalized);
           }
           state.wishlist = next;
@@ -609,18 +1352,16 @@
         } catch { alert("Не удалось импортировать JSON."); }
       };
       reader.readAsText(file);
-      els.importInput.value = "";
+      if (els.importInput) els.importInput.value = "";
     }
 
     function bindEvents() {
       els.searchInput.addEventListener("input", () => { state.filters.search = els.searchInput.value; state.visibleCount = PAGE_SIZE; applyFilters(); });
-      els.categorySelect.addEventListener("change", () => { state.filters.category = els.categorySelect.value; state.visibleCount = PAGE_SIZE; applyFilters(); });
       els.weaponSelect.addEventListener("change", () => { state.filters.weapon = els.weaponSelect.value; state.visibleCount = PAGE_SIZE; applyFilters(); });
       els.resetFiltersBtn.addEventListener("click", () => {
-        state.filters = { search: "", category: "", weapon: "" };
+        state.filters = { search: "", weapon: "" };
         state.visibleCount = PAGE_SIZE;
         els.searchInput.value = "";
-        els.categorySelect.value = "";
         els.weaponSelect.value = "";
         applyFilters();
       });
@@ -638,7 +1379,8 @@
         state.allSkins = raw
           .map(normalizeSkin)
           .filter(item => item.id && item.image && item.weapon !== "Unknown")
-          .sort((a, b) => a.weapon.localeCompare(b.weapon) || a.name.localeCompare(b.name));
+          .filter(isAllowedSkin)
+          .sort((a, b) => a.category.localeCompare(b.category) || a.weapon.localeCompare(b.weapon) || a.name.localeCompare(b.name));
         state.filteredSkins = [...state.allSkins];
         els.dataDot.classList.add("ok");
         els.dataStatus.textContent = `${state.allSkins.length} skins loaded`;
