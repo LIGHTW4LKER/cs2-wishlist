@@ -92,6 +92,72 @@
     .dot.ok { background: var(--ok); }
     .dot.bad { background: var(--danger); }
 
+
+    .view-toggle-btn {
+      width: 100%;
+      white-space: nowrap;
+    }
+
+    .search-panel {
+      min-width: 0;
+    }
+
+    .layout.wishlist-view .wishlist {
+      order: 1;
+      position: static;
+      width: 100%;
+    }
+
+    .layout.wishlist-view .search-panel {
+      order: 2;
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      width: 100%;
+    }
+
+    .layout.wishlist-view .search-panel .controls {
+      grid-template-columns: 1fr;
+    }
+
+    .layout.wishlist-view .search-panel .toolbar {
+      align-items: center;
+    }
+
+    .layout.wishlist-view .search-panel .toolbar-info {
+      width: 100%;
+      min-height: 0;
+      padding-top: 2px;
+    }
+
+    .layout.wishlist-view .search-panel .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .layout.wishlist-view .search-panel .content {
+      max-height: calc(100vh - 260px);
+      overflow: auto;
+    }
+
+    .layout.wishlist-view .search-panel .card {
+      min-height: 236px;
+    }
+
+    .layout.wishlist-view .wishlist .wish-list {
+      gap: 14px;
+    }
+
+    @media (max-width: 1050px) {
+      .layout.wishlist-view .search-panel {
+        position: static;
+      }
+
+      .layout.wishlist-view .search-panel .content {
+        max-height: none;
+        overflow: visible;
+      }
+    }
+
     .layout {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 420px;
@@ -318,11 +384,151 @@
       border-bottom: 1px solid rgba(45,52,66,.7);
     }
 
+
+    .wish-item.owned {
+      background: rgba(155, 230, 187, .075);
+    }
+
+    .wish-item.owned .wish-title {
+      color: var(--ok);
+    }
+
+    .wish-item.owned img {
+      opacity: .78;
+    }
+
+    .wish-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      align-items: center;
+    }
+
+    .owned-btn {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: #11141c;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    .owned-btn:hover {
+      color: var(--ok);
+      border-color: rgba(155,230,187,.35);
+    }
+
+    .owned-btn.active {
+      color: var(--ok);
+      border-color: rgba(155,230,187,.45);
+      background: rgba(155,230,187,.11);
+    }
+
     .wish-item:last-child { border-bottom: 0; }
     .wish-item img { width: 74px; height: 46px; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0,0,0,.35)); }
     .wish-title { font-size: 13px; font-weight: 650; line-height: 1.28; }
     .wish-meta { margin-top: 3px; color: var(--muted); font-size: 11px; }
 
+
+
+
+    .share-tools {
+      display: grid;
+      gap: 8px;
+      padding: 0 18px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .share-buttons {
+      display: grid;
+      grid-template-columns: 1.2fr .9fr 1fr;
+      gap: 8px;
+    }
+
+    .share-buttons .btn {
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+
+    #shareCodeInput {
+      min-height: 74px;
+      resize: vertical;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    @media (max-width: 740px) {
+      .share-buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .wishlist-tools {
+      display: flex;
+      gap: 8px;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wishlist-tools .btn {
+      flex: 1;
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+
+    .family-group {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(15,17,21,.45);
+    }
+
+    .family-group + .family-group {
+      margin-top: 12px;
+    }
+
+    .family-head {
+      width: 100%;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.025);
+      color: var(--soft);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 11px 12px;
+      font: inherit;
+      font-weight: 800;
+      text-align: left;
+    }
+
+    .family-head:hover { background: rgba(255,255,255,.045); }
+
+    .family-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .family-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .family-group.collapsed > .family-body { display: none; }
+    .family-group.collapsed > .family-head { border-bottom: 0; }
+    .family-group .weapon-group { border-radius: 14px; background: rgba(15,17,21,.36); }
+    .family-group .weapon-group + .weapon-group { margin-top: 0; }
+    .family-group .weapon-head { padding-left: 10px; padding-right: 10px; }
+    .standalone-items { display: block; }
 
     .wish-actions {
       display: flex;
@@ -506,6 +712,454 @@
       }
     }
 
+  
+    /* v19 layout switch + redesigned wishlist mode */
+    .view-switch {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(17, 20, 28, .88);
+      color: var(--muted);
+      cursor: pointer;
+      transition: border-color .16s ease, background .16s ease, transform .16s ease;
+      user-select: none;
+    }
+
+    .view-switch:hover {
+      border-color: rgba(159,179,255,.42);
+      background: rgba(24,28,38,.95);
+      transform: translateY(-1px);
+    }
+
+    .view-switch-label {
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1;
+      letter-spacing: .01em;
+    }
+
+    .view-switch-track {
+      width: 48px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(159,179,255,.28);
+      background: rgba(15,17,21,.9);
+      padding: 3px;
+      position: relative;
+      flex: 0 0 auto;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.025);
+    }
+
+    .view-switch-thumb {
+      width: 18px;
+      height: 18px;
+      display: block;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 4px 14px rgba(159,179,255,.34);
+      transform: translateX(0);
+      transition: transform .18s ease, background .18s ease;
+    }
+
+    .view-switch.active {
+      color: var(--soft);
+      border-color: rgba(155,230,187,.28);
+      background: rgba(155,230,187,.055);
+    }
+
+    .view-switch.active .view-switch-track {
+      border-color: rgba(155,230,187,.36);
+    }
+
+    .view-switch.active .view-switch-thumb {
+      transform: translateX(22px);
+      background: var(--ok);
+      box-shadow: 0 4px 14px rgba(155,230,187,.28);
+    }
+
+    .layout.wishlist-view {
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 18px;
+    }
+
+    .layout.wishlist-view .wishlist {
+      order: 1;
+      position: static;
+      width: 100%;
+      border-color: rgba(155,230,187,.18);
+      background:
+        radial-gradient(circle at top left, rgba(155,230,187,.055), transparent 24rem),
+        rgba(21,24,33,.86);
+    }
+
+    .layout.wishlist-view .search-panel {
+      order: 2;
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      width: 100%;
+      border-color: rgba(159,179,255,.16);
+      background:
+        radial-gradient(circle at top right, rgba(159,179,255,.08), transparent 18rem),
+        rgba(16,18,25,.92);
+    }
+
+    .layout.wishlist-view .wishlist .wish-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 14px;
+      align-items: start;
+    }
+
+    .layout.wishlist-view .wishlist .family-group + .family-group {
+      margin-top: 0;
+    }
+
+    .layout.wishlist-view .wishlist .family-group {
+      background: rgba(15,17,21,.54);
+      border-color: rgba(60,65,75,.88);
+    }
+
+    .layout.wishlist-view .wishlist .family-head {
+      min-height: 52px;
+      padding: 13px 14px;
+      font-size: 16px;
+      background: linear-gradient(90deg, rgba(255,255,255,.045), rgba(255,255,255,.015));
+    }
+
+    .layout.wishlist-view .wishlist .family-body {
+      padding: 12px;
+      gap: 12px;
+    }
+
+    .layout.wishlist-view .wishlist .weapon-head {
+      padding: 11px 12px;
+      font-size: 15px;
+    }
+
+    .layout.wishlist-view .wishlist .wish-item {
+      grid-template-columns: 92px minmax(0, 1fr) auto;
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .layout.wishlist-view .wishlist .wish-item img {
+      width: 88px;
+      height: 56px;
+    }
+
+    .layout.wishlist-view .wishlist .wish-title {
+      font-size: 14px;
+    }
+
+    .layout.wishlist-view .search-panel .controls {
+      grid-template-columns: 1fr;
+      padding: 14px;
+      gap: 10px;
+    }
+
+    .layout.wishlist-view .search-panel .toolbar {
+      padding: 12px 14px;
+      gap: 8px;
+    }
+
+    .layout.wishlist-view .search-panel .toolbar .btn {
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+
+    .layout.wishlist-view .search-panel .toolbar-info {
+      width: 100%;
+      min-height: 0;
+      padding-top: 2px;
+      font-size: 12px;
+    }
+
+    .layout.wishlist-view .search-panel .content {
+      max-height: calc(100vh - 278px);
+      overflow: auto;
+      padding: 14px;
+    }
+
+    .layout.wishlist-view .search-panel .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .layout.wishlist-view .search-panel .card {
+      min-height: 0 !important;
+      display: grid !important;
+      grid-template-columns: 92px minmax(0, 1fr);
+      border-radius: 13px;
+      background: linear-gradient(180deg, rgba(27,31,42,.82), rgba(18,21,29,.94));
+    }
+
+    .layout.wishlist-view .search-panel .skin-img-wrap {
+      height: 86px !important;
+      max-height: 86px !important;
+      min-height: 86px !important;
+      flex: none !important;
+      padding: 8px !important;
+      border-bottom: 0 !important;
+      border-right: 1px solid var(--line);
+    }
+
+    .layout.wishlist-view .search-panel .skin-img-wrap img {
+      max-width: 74px !important;
+      max-height: 54px !important;
+      transform: none !important;
+      filter: drop-shadow(0 6px 8px rgba(0,0,0,.35)) !important;
+    }
+
+    .layout.wishlist-view .search-panel .card-body {
+      padding: 9px 10px;
+      gap: 4px;
+      background: transparent !important;
+      border-top: 0 !important;
+      min-width: 0;
+    }
+
+    .layout.wishlist-view .search-panel .skin-name {
+      font-size: 12px;
+      line-height: 1.2;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .layout.wishlist-view .search-panel .meta {
+      font-size: 11px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .layout.wishlist-view .search-panel .rarity {
+      display: none;
+    }
+
+    .layout.wishlist-view .search-panel .card-actions {
+      margin-top: 4px;
+    }
+
+    .layout.wishlist-view .search-panel .card-actions .btn {
+      padding: 6px 8px;
+      font-size: 12px;
+      border-radius: 9px;
+    }
+
+    @media (max-width: 1050px) {
+      .layout.wishlist-view {
+        grid-template-columns: 1fr;
+      }
+
+      .layout.wishlist-view .search-panel {
+        position: static;
+      }
+
+      .layout.wishlist-view .search-panel .content {
+        max-height: none;
+        overflow: visible;
+      }
+
+      .layout.wishlist-view .wishlist .wish-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 740px) {
+      .view-switch {
+        width: fit-content;
+      }
+
+      .layout.wishlist-view .wishlist .wish-item {
+        grid-template-columns: 74px minmax(0, 1fr) auto;
+      }
+
+      .layout.wishlist-view .wishlist .wish-item img {
+        width: 74px;
+        height: 46px;
+      }
+    }
+
+  
+    /* v20: wishlist-left mode uses big 4-column cards */
+    .layout.wishlist-view .wishlist .wish-list {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 14px !important;
+      align-items: stretch !important;
+    }
+
+    .layout.wishlist-view .wishlist .family-group {
+      width: 100% !important;
+      margin-top: 0 !important;
+    }
+
+    .layout.wishlist-view .wishlist .family-body {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 12px !important;
+      padding: 12px !important;
+    }
+
+    .layout.wishlist-view .wishlist .family-group.collapsed > .family-body {
+      display: none !important;
+    }
+
+    .layout.wishlist-view .wishlist .weapon-group {
+      width: 100% !important;
+      overflow: hidden !important;
+    }
+
+    .layout.wishlist-view .wishlist .wish-items {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      gap: 12px !important;
+      padding: 12px !important;
+    }
+
+    .layout.wishlist-view .wishlist .standalone-items .weapon-group .wish-items {
+      padding: 0 !important;
+    }
+
+    .layout.wishlist-view .wishlist .standalone-items {
+      padding: 12px !important;
+    }
+
+    .layout.wishlist-view .wishlist .wish-item {
+      position: relative !important;
+      display: flex !important;
+      flex-direction: column !important;
+      grid-template-columns: none !important;
+      gap: 0 !important;
+      padding: 0 !important;
+      min-height: 292px !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 16px !important;
+      overflow: hidden !important;
+      background: linear-gradient(180deg, rgba(27,31,42,.95), rgba(18,21,29,.97)) !important;
+    }
+
+    .layout.wishlist-view .wishlist .wish-item + .wish-item {
+      border-top: 1px solid var(--line) !important;
+    }
+
+    .layout.wishlist-view .wishlist .wish-item img {
+      width: 100% !important;
+      height: 142px !important;
+      object-fit: contain !important;
+      padding: 14px 18px !important;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.045), transparent),
+        rgba(255,255,255,.02) !important;
+      border-bottom: 1px solid var(--line) !important;
+      filter: drop-shadow(0 12px 16px rgba(0,0,0,.42)) !important;
+      opacity: 1 !important;
+      pointer-events: none !important;
+      user-select: none !important;
+    }
+
+    .layout.wishlist-view .wishlist .wish-item > div:not(.wish-controls) {
+      padding: 12px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 7px !important;
+      flex: 1 !important;
+      min-width: 0 !important;
+    }
+
+    .layout.wishlist-view .wishlist .wish-title {
+      font-size: 14px !important;
+      line-height: 1.25 !important;
+      font-weight: 750 !important;
+      display: -webkit-box !important;
+      -webkit-line-clamp: 2 !important;
+      -webkit-box-orient: vertical !important;
+      overflow: hidden !important;
+    }
+
+    .layout.wishlist-view .wishlist .wish-meta {
+      font-size: 12px !important;
+      line-height: 1.3 !important;
+    }
+
+    .layout.wishlist-view .wishlist .wish-actions {
+      margin-top: auto !important;
+      display: flex !important;
+      gap: 7px !important;
+      flex-wrap: wrap !important;
+    }
+
+    .layout.wishlist-view .wishlist .mini-btn {
+      flex: 1 1 auto !important;
+      min-width: 80px !important;
+      text-align: center !important;
+      padding: 7px 9px !important;
+      font-size: 12px !important;
+      border-radius: 10px !important;
+    }
+
+    .layout.wishlist-view .wishlist .wish-controls {
+      position: absolute !important;
+      top: 10px !important;
+      right: 10px !important;
+      z-index: 4 !important;
+      flex-direction: row !important;
+      gap: 7px !important;
+      align-items: center !important;
+      background: rgba(15,17,21,.48) !important;
+      padding: 4px !important;
+      border-radius: 12px !important;
+      backdrop-filter: blur(8px) !important;
+    }
+
+    .layout.wishlist-view .wishlist .owned-btn,
+    .layout.wishlist-view .wishlist .icon-btn {
+      width: 32px !important;
+      height: 32px !important;
+      border-radius: 9px !important;
+    }
+
+    .layout.wishlist-view .wishlist .wish-item.owned {
+      background:
+        linear-gradient(180deg, rgba(155,230,187,.13), rgba(18,21,29,.97)) !important;
+      border-color: rgba(155,230,187,.28) !important;
+    }
+
+    .layout.wishlist-view .wishlist .wish-item.owned img {
+      opacity: .74 !important;
+    }
+
+    @media (max-width: 1320px) {
+      .layout.wishlist-view .wishlist .wish-items {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      }
+    }
+
+    @media (max-width: 1050px) {
+      .layout.wishlist-view .wishlist .wish-items {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .layout.wishlist-view .wishlist .wish-items {
+        grid-template-columns: 1fr !important;
+      }
+
+      .layout.wishlist-view .wishlist .wish-item img {
+        height: 122px !important;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -517,11 +1171,18 @@
       <div class="status">
         <div class="pill"><span id="dataDot" class="dot"></span><span id="dataStatus">Загрузка базы…</span></div>
         <div class="pill"><span id="wishCount">0</span> items in wishlist</div>
+        <button id="viewToggleBtn" class="view-switch" type="button" aria-pressed="false" title="Переключить вид">
+          <span class="view-switch-label">База</span>
+          <span class="view-switch-track" aria-hidden="true">
+            <span class="view-switch-thumb"></span>
+          </span>
+          <span class="view-switch-label">Wishlist</span>
+        </button>
       </div>
     </header>
 
-    <section class="layout">
-      <section class="panel">
+    <section id="layout" class="layout">
+      <section class="panel search-panel">
 
         <div class="controls">
           <div class="field">
@@ -549,6 +1210,20 @@
 
       <aside class="panel wishlist">
 
+        <div class="wishlist-tools">
+          <button id="collapseAllBtn" class="btn">Скрыть всё</button>
+          <button id="expandAllBtn" class="btn">Открыть всё</button>
+        </div>
+
+        <div class="share-tools">
+          <div class="share-buttons">
+            <button id="generateCodeBtn" class="btn">Сгенерировать код</button>
+            <button id="copyCodeBtn" class="btn">Копировать</button>
+            <button id="loadCodeBtn" class="btn primary">Загрузить код</button>
+          </div>
+          <textarea id="shareCodeInput" rows="3" placeholder="Здесь появится код списка. Или вставь чужой код и нажми «Загрузить код»."></textarea>
+        </div>
+
         <div class="content">
           <div id="wishlist" class="wish-list"></div>
           <div id="emptyWishlist" class="empty">Wishlist пустой.</div>
@@ -562,6 +1237,8 @@
   <script>
     const DATA_URL = "https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/skins.json";
     const STORAGE_KEY = "cs2_skin_wishlist_v1";
+    const COLLAPSE_STORAGE_KEY = "cs2_skin_wishlist_collapsed_groups_v1";
+    const LAYOUT_STORAGE_KEY = "cs2_skin_wishlist_layout_mode_v1";
     const MAX_PER_WEAPON = 5;
     const MAX_PER_SPECIAL_GROUP = 10;
     const PAGE_SIZE = 80;
@@ -576,9 +1253,11 @@
     };
 
     const els = {
+      layout: document.getElementById("layout"),
       dataDot: document.getElementById("dataDot"),
       dataStatus: document.getElementById("dataStatus"),
       wishCount: document.getElementById("wishCount"),
+      viewToggleBtn: document.getElementById("viewToggleBtn"),
       resultInfo: document.getElementById("resultInfo"),
       searchInput: document.getElementById("searchInput"),
       weaponSelect: document.getElementById("weaponSelect"),
@@ -588,6 +1267,12 @@
       emptySearch: document.getElementById("emptySearch"),
       wishlist: document.getElementById("wishlist"),
       emptyWishlist: document.getElementById("emptyWishlist"),
+      collapseAllBtn: document.getElementById("collapseAllBtn"),
+      expandAllBtn: document.getElementById("expandAllBtn"),
+      generateCodeBtn: document.getElementById("generateCodeBtn"),
+      copyCodeBtn: document.getElementById("copyCodeBtn"),
+      loadCodeBtn: document.getElementById("loadCodeBtn"),
+      shareCodeInput: document.getElementById("shareCodeInput"),
       exportBtn: document.getElementById("exportBtn"),
       importInput: document.getElementById("importInput"),
       clearBtn: document.getElementById("clearBtn"),
@@ -606,8 +1291,39 @@
         image: raw.image || raw.image_url || raw.image_url_steam || "",
         minFloat: raw.min_float ?? null,
         maxFloat: raw.max_float ?? null,
-        paintIndex: raw.paint_index ?? raw.paintIndex ?? raw.paintindex ?? null
+        paintIndex: raw.paint_index ?? raw.paintIndex ?? raw.paintindex ?? null,
+        owned: Boolean(raw.owned)
       };
+    }
+
+    function setLayoutMode(mode, shouldSave = true) {
+      const wishlistMode = mode === "wishlist";
+
+      if (els.layout) {
+        els.layout.classList.toggle("wishlist-view", wishlistMode);
+      }
+
+      if (els.viewToggleBtn) {
+        els.viewToggleBtn.classList.toggle("active", wishlistMode);
+        els.viewToggleBtn.setAttribute("aria-pressed", String(wishlistMode));
+        els.viewToggleBtn.title = wishlistMode
+          ? "Показать базу слева"
+          : "Показать wishlist слева";
+      }
+
+      if (shouldSave) {
+        localStorage.setItem(LAYOUT_STORAGE_KEY, wishlistMode ? "wishlist" : "skins");
+      }
+    }
+
+    function loadLayoutMode() {
+      const mode = localStorage.getItem(LAYOUT_STORAGE_KEY);
+      setLayoutMode(mode === "wishlist" ? "wishlist" : "skins", false);
+    }
+
+    function toggleLayoutMode() {
+      const wishlistMode = els.layout && els.layout.classList.contains("wishlist-view");
+      setLayoutMode(wishlistMode ? "skins" : "wishlist");
     }
 
     function saveWishlist() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state.wishlist)); }
@@ -617,6 +1333,17 @@
         const stored = localStorage.getItem(STORAGE_KEY);
         state.wishlist = stored ? JSON.parse(stored) : [];
       } catch { state.wishlist = []; }
+    }
+
+    function saveCollapsedGroups() {
+      localStorage.setItem(COLLAPSE_STORAGE_KEY, JSON.stringify([...state.collapsedGroups]));
+    }
+
+    function loadCollapsedGroups() {
+      try {
+        const stored = localStorage.getItem(COLLAPSE_STORAGE_KEY);
+        state.collapsedGroups = new Set(stored ? JSON.parse(stored) : []);
+      } catch { state.collapsedGroups = new Set(); }
     }
 
     function showToast(message) {
@@ -647,8 +1374,12 @@
         : MAX_PER_WEAPON;
     }
 
+    function isOwned(item) {
+      return Boolean(item.owned);
+    }
+
     function getWishlistGroupCount(groupKey) {
-      return state.wishlist.filter(item => getWishlistGroupKey(item) === groupKey).length;
+      return state.wishlist.filter(item => getWishlistGroupKey(item) === groupKey && !isOwned(item)).length;
     }
 
     function isInWishlist(id) { return state.wishlist.some(item => item.id === id); }
@@ -670,7 +1401,7 @@
         return;
       }
 
-      state.wishlist.push(skin);
+      state.wishlist.push({ ...skin, owned: false });
       saveWishlist();
       renderWishlist();
       renderSkins();
@@ -683,6 +1414,17 @@
       renderWishlist();
       renderSkins();
       showToast("Удалено");
+    }
+
+    function toggleOwnedStatus(id) {
+      const item = state.wishlist.find(item => item.id === id);
+      if (!item) return;
+
+      item.owned = !Boolean(item.owned);
+      saveWishlist();
+      renderWishlist();
+      renderSkins();
+      showToast(item.owned ? "Отмечено как имеющееся" : "Снова считается в wishlist");
     }
 
     const DEF_INDEX_BY_WEAPON = {
@@ -1218,101 +1960,318 @@
       els.skinsGrid.querySelectorAll("[data-add]").forEach(btn => btn.addEventListener("click", () => addToWishlist(btn.dataset.add)));
     }
 
+    function getWishlistFamilyKey(item) {
+      if (item.category === "Gloves") return "Gloves";
+      if (item.category === "Knives") return "Knives";
+      if (item.category === "Rifles") return "Rifles";
+      if (item.category === "Sniper Rifles") return "Snipers";
+      if (item.category === "SMGs") return "SMG";
+      if (item.category === "Pistols") return "Pistols";
+      if (item.category === "Heavy") return "Heavy";
+      if (item.weapon === "Zeus x27") return "Zeus x27";
+      return item.category || "Other";
+    }
+
+    function getCollapseKey(type, key) { return `${type}:${key}`; }
+
     function groupWishlist() {
-      const groups = new Map();
+      const families = new Map();
 
       for (const item of state.wishlist) {
-        const key = getWishlistGroupKey(item);
+        const familyKey = getWishlistFamilyKey(item);
+        const groupKey = getWishlistGroupKey(item);
+        const standalone = familyKey === "Gloves" || familyKey === "Knives" || familyKey === "Zeus x27";
 
-        if (!groups.has(key)) {
-          groups.set(key, { key, label: key, items: [] });
+        if (!families.has(familyKey)) {
+          families.set(familyKey, { key: familyKey, label: familyKey, standalone, items: [], children: new Map() });
         }
 
-        groups.get(key).items.push(item);
+        const family = families.get(familyKey);
+
+        if (standalone) {
+          family.items.push(item);
+        } else {
+          if (!family.children.has(groupKey)) family.children.set(groupKey, { key: groupKey, label: groupKey, items: [] });
+          family.children.get(groupKey).items.push(item);
+        }
       }
 
-      const order = ["Gloves", "Knives"];
-      return [...groups.values()].sort((a, b) => {
-        const ai = order.indexOf(a.key);
-        const bi = order.indexOf(b.key);
+      const order = ["Gloves", "Knives", "Rifles", "Snipers", "SMG", "Pistols", "Heavy", "Zeus x27", "Other"];
 
+      return [...families.values()].sort((a, b) => {
+        const ai = order.indexOf(a.key), bi = order.indexOf(b.key);
         if (ai !== -1 || bi !== -1) {
           if (ai === -1) return 1;
           if (bi === -1) return -1;
           return ai - bi;
         }
-
         return a.label.localeCompare(b.label);
-      });
+      }).map(family => ({ ...family, children: [...family.children.values()].sort((a, b) => a.label.localeCompare(b.label)) }));
+    }
+
+    function countActiveWishlistItems(items) {
+      return items.filter(item => !isOwned(item)).length;
+    }
+
+    function sortWishlistItems(items) {
+      return [...items].sort((a, b) => Number(isOwned(a)) - Number(isOwned(b)));
+    }
+
+    function getGroupItemCount(group) {
+      if (group.standalone) return countActiveWishlistItems(group.items);
+      return group.children.reduce((sum, child) => sum + countActiveWishlistItems(child.items), 0);
     }
 
     function toggleWishlistGroup(key) {
-      if (state.collapsedGroups.has(key)) {
-        state.collapsedGroups.delete(key);
-      } else {
-        state.collapsedGroups.add(key);
-      }
-
+      if (state.collapsedGroups.has(key)) state.collapsedGroups.delete(key);
+      else state.collapsedGroups.add(key);
+      saveCollapsedGroups();
       renderWishlist();
+    }
+
+    function collapseAllWishlistGroups() {
+      for (const family of groupWishlist()) {
+        state.collapsedGroups.add(getCollapseKey("family", family.key));
+        if (!family.standalone) for (const child of family.children) state.collapsedGroups.add(getCollapseKey("weapon", child.key));
+      }
+      saveCollapsedGroups();
+      renderWishlist();
+    }
+
+    function expandAllWishlistGroups() {
+      state.collapsedGroups.clear();
+      saveCollapsedGroups();
+      renderWishlist();
+    }
+
+    function renderWishlistItem(item) {
+      return `
+        <div class="wish-item ${isOwned(item) ? "owned" : ""}">
+          <img loading="lazy" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">
+          <div>
+            <div class="wish-title">${escapeHtml(item.name)}</div>
+            <div class="wish-meta">${escapeHtml(item.rarity || "Unknown rarity")}${isOwned(item) ? " · есть" : ""}</div>
+            <div class="wish-actions">
+              <button class="mini-btn" type="button" data-ingame="${escapeHtml(item.id)}" ${canGenerateInspect(item) ? "" : "disabled"}>In game</button>
+              <button class="mini-btn" type="button" data-copy-command="${escapeHtml(item.id)}" ${canGenerateInspect(item) ? "" : "disabled"}>${item.category === "Gloves" ? "Copy !gengl" : "Copy !g"}</button>
+            </div>
+          </div>
+          <div class="wish-controls">
+            <button class="owned-btn ${isOwned(item) ? "active" : ""}" title="${isOwned(item) ? "Убрать отметку «есть»" : "Отметить как уже имеющийся"}" type="button" data-toggle-owned="${escapeHtml(item.id)}">✓</button>
+            <button class="icon-btn" title="Удалить" data-remove="${escapeHtml(item.id)}">×</button>
+          </div>
+        </div>`;
     }
 
     function renderWishlist() {
       els.wishCount.textContent = String(state.wishlist.length);
       els.emptyWishlist.classList.toggle("hidden", state.wishlist.length !== 0);
+      const families = groupWishlist();
 
-      const groups = groupWishlist();
+      els.wishlist.innerHTML = families.map(family => {
+        const familyKey = getCollapseKey("family", family.key);
+        const familyCollapsed = state.collapsedGroups.has(familyKey);
+        const familyIcon = familyCollapsed ? "▶" : "▼";
+        const familyCount = getGroupItemCount(family);
 
-      els.wishlist.innerHTML = groups.map(group => {
-        const collapsed = state.collapsedGroups.has(group.key);
-        const limit = getWishlistGroupLimit(group.key);
-        const icon = collapsed ? "▶" : "▼";
+        if (family.standalone) {
+          const limit = getWishlistGroupLimit(family.key);
+          return `
+            <section class="family-group ${familyCollapsed ? "collapsed" : ""}">
+              <button class="family-head" type="button" data-toggle-group="${escapeHtml(familyKey)}" aria-expanded="${familyCollapsed ? "false" : "true"}">
+                <span class="family-title"><span class="collapse-icon">${familyIcon}</span>${escapeHtml(family.label)}</span>
+                <span>${familyCount}/${limit}</span>
+              </button>
+              <div class="family-body standalone-items">
+                <section class="weapon-group"><div class="wish-items">${sortWishlistItems(family.items).map(renderWishlistItem).join("")}</div></section>
+              </div>
+            </section>`;
+        }
 
         return `
-          <section class="weapon-group ${collapsed ? "collapsed" : ""}">
-            <button class="weapon-head" type="button" data-toggle-group="${escapeHtml(group.key)}" aria-expanded="${collapsed ? "false" : "true"}">
-              <span class="weapon-title"><span class="collapse-icon">${icon}</span>${escapeHtml(group.label)}</span>
-              <span>${group.items.length}/${limit}</span>
+          <section class="family-group ${familyCollapsed ? "collapsed" : ""}">
+            <button class="family-head" type="button" data-toggle-group="${escapeHtml(familyKey)}" aria-expanded="${familyCollapsed ? "false" : "true"}">
+              <span class="family-title"><span class="collapse-icon">${familyIcon}</span>${escapeHtml(family.label)}</span>
+              <span>${familyCount}</span>
             </button>
-
-            <div class="wish-items">
-              ${group.items.map(item => `
-                <div class="wish-item">
-                  <img loading="lazy" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}">
-                  <div>
-                    <div class="wish-title">${escapeHtml(item.name)}</div>
-                    <div class="wish-meta">${escapeHtml(item.rarity || "Unknown rarity")}</div>
-                    <div class="wish-actions">
-                      <button class="mini-btn" type="button" data-ingame="${escapeHtml(item.id)}" ${canGenerateInspect(item) ? "" : "disabled"}>In game</button>
-                      <button class="mini-btn" type="button" data-copy-command="${escapeHtml(item.id)}" ${canGenerateInspect(item) ? "" : "disabled"}>${item.category === "Gloves" ? "Copy !gengl" : "Copy !g"}</button>
-                    </div>
-                  </div>
-                  <button class="icon-btn" title="Удалить" data-remove="${escapeHtml(item.id)}">×</button>
-                </div>`).join("")}
+            <div class="family-body">
+              ${family.children.map(child => {
+                const childKey = getCollapseKey("weapon", child.key);
+                const childCollapsed = state.collapsedGroups.has(childKey);
+                const childIcon = childCollapsed ? "▶" : "▼";
+                const limit = getWishlistGroupLimit(child.key);
+                return `
+                  <section class="weapon-group ${childCollapsed ? "collapsed" : ""}">
+                    <button class="weapon-head" type="button" data-toggle-group="${escapeHtml(childKey)}" aria-expanded="${childCollapsed ? "false" : "true"}">
+                      <span class="weapon-title"><span class="collapse-icon">${childIcon}</span>${escapeHtml(child.label)}</span>
+                      <span>${countActiveWishlistItems(child.items)}/${limit}</span>
+                    </button>
+                    <div class="wish-items">${sortWishlistItems(child.items).map(renderWishlistItem).join("")}</div>
+                  </section>`;
+              }).join("")}
             </div>
           </section>`;
       }).join("");
 
-      els.wishlist.querySelectorAll("[data-remove]").forEach(btn => {
-        btn.addEventListener("click", () => removeFromWishlist(btn.dataset.remove));
-      });
+      els.wishlist.querySelectorAll("[data-remove]").forEach(btn => btn.addEventListener("click", () => removeFromWishlist(btn.dataset.remove)));
+      els.wishlist.querySelectorAll("[data-toggle-owned]").forEach(btn => btn.addEventListener("click", event => { event.stopPropagation(); toggleOwnedStatus(btn.dataset.toggleOwned); }));
+      els.wishlist.querySelectorAll("[data-ingame]").forEach(btn => btn.addEventListener("click", event => { event.stopPropagation(); openInGamePreview(btn.dataset.ingame); }));
+      els.wishlist.querySelectorAll("[data-copy-command]").forEach(btn => btn.addEventListener("click", event => { event.stopPropagation(); copyConsoleCommand(btn.dataset.copyCommand); }));
+      els.wishlist.querySelectorAll("[data-toggle-group]").forEach(btn => btn.addEventListener("click", () => toggleWishlistGroup(btn.dataset.toggleGroup)));
+    }
 
-      els.wishlist.querySelectorAll("[data-ingame]").forEach(btn => {
-        btn.addEventListener("click", event => {
-          event.stopPropagation();
-          openInGamePreview(btn.dataset.ingame);
-        });
-      });
+    function encodeSharePayload(payload) {
+      const json = JSON.stringify(payload);
+      const bytes = new TextEncoder().encode(json);
+      let binary = "";
 
-      els.wishlist.querySelectorAll("[data-copy-command]").forEach(btn => {
-        btn.addEventListener("click", event => {
-          event.stopPropagation();
-          copyConsoleCommand(btn.dataset.copyCommand);
-        });
-      });
+      for (const byte of bytes) {
+        binary += String.fromCharCode(byte);
+      }
 
-      els.wishlist.querySelectorAll("[data-toggle-group]").forEach(btn => {
-        btn.addEventListener("click", () => toggleWishlistGroup(btn.dataset.toggleGroup));
-      });
+      return "CS2W1." + btoa(binary)
+        .replaceAll("+", "-")
+        .replaceAll("/", "_")
+        .replaceAll("=", "");
+    }
+
+    function decodeShareCode(code) {
+      let value = String(code || "").trim();
+
+      if (!value) {
+        throw new Error("Empty code");
+      }
+
+      if (value.startsWith("CS2W1.")) {
+        value = value.slice("CS2W1.".length);
+      }
+
+      value = value.replaceAll("-", "+").replaceAll("_", "/");
+
+      while (value.length % 4) {
+        value += "=";
+      }
+
+      const binary = atob(value);
+      const bytes = new Uint8Array(binary.length);
+
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+
+      return JSON.parse(new TextDecoder().decode(bytes));
+    }
+
+    function buildWishlistFromEntries(entries) {
+      const byId = new Map(state.allSkins.map(item => [item.id, item]));
+      const next = [];
+
+      for (const entry of entries) {
+        const id = typeof entry === "string" ? entry : entry?.id;
+        const owned = typeof entry === "object" && entry ? Boolean(entry.owned) : false;
+        const skin = byId.get(id);
+
+        if (!skin) continue;
+        if (next.some(item => item.id === skin.id)) continue;
+
+        const groupKey = getWishlistGroupKey(skin);
+        const groupLimit = getWishlistGroupLimit(groupKey);
+        const groupCount = next.filter(item => getWishlistGroupKey(item) === groupKey && !isOwned(item)).length;
+
+        if (!owned && groupCount >= groupLimit) continue;
+
+        next.push({ ...skin, owned });
+      }
+
+      return next;
+    }
+
+    function generateWishlistCode() {
+      if (!state.wishlist.length) {
+        showToast("Wishlist пустой");
+        return;
+      }
+
+      const payload = {
+        app: "CS2 Skin Wishlist",
+        version: 2,
+        createdAt: new Date().toISOString(),
+        ids: state.wishlist.map(item => item.id),
+        items: state.wishlist.map(item => ({ id: item.id, owned: Boolean(item.owned) }))
+      };
+
+      const code = encodeSharePayload(payload);
+      els.shareCodeInput.value = code;
+
+      copyText(code)
+        .then(() => showToast("Код создан и скопирован"))
+        .catch(() => showToast("Код создан"));
+    }
+
+    function copyWishlistCode() {
+      const code = els.shareCodeInput.value.trim();
+
+      if (!code) {
+        showToast("Сначала сгенерируй или вставь код");
+        return;
+      }
+
+      copyText(code)
+        .then(() => showToast("Код скопирован"))
+        .catch(() => alert("Не удалось скопировать код. Скопируй вручную."));
+    }
+
+    function loadWishlistCode() {
+      const code = els.shareCodeInput.value.trim();
+
+      if (!code) {
+        showToast("Вставь код списка");
+        return;
+      }
+
+      let payload;
+
+      try {
+        payload = decodeShareCode(code);
+      } catch {
+        alert("Код списка не распознан.");
+        return;
+      }
+
+      const entries = Array.isArray(payload.items)
+        ? payload.items
+        : Array.isArray(payload.ids)
+          ? payload.ids
+          : [];
+
+      if (!entries.length) {
+        alert("В коде нет скинов.");
+        return;
+      }
+
+      if (!state.allSkins.length) {
+        alert("База скинов ещё не загрузилась. Подожди пару секунд и попробуй снова.");
+        return;
+      }
+
+      const next = buildWishlistFromEntries(entries);
+
+      if (!next.length) {
+        alert("Не удалось найти скины из этого кода в текущей базе.");
+        return;
+      }
+
+      const shouldReplace = confirm(
+        `Загрузить ${next.length} скинов из кода?\\n\\nOK — заменить текущий wishlist.\\nCancel — отменить.`
+      );
+
+      if (!shouldReplace) return;
+
+      state.wishlist = next;
+      saveWishlist();
+      renderWishlist();
+      renderSkins();
+      showToast("Wishlist загружен из кода");
     }
 
     function exportWishlist() {
@@ -1341,7 +2300,7 @@
             const normalized = normalizeSkin(item);
             if (next.some(x => x.id === normalized.id)) continue;
             const groupKey = getWishlistGroupKey(normalized);
-            if (next.filter(x => getWishlistGroupKey(x) === groupKey).length >= getWishlistGroupLimit(groupKey)) continue;
+            if (!isOwned(normalized) && next.filter(x => getWishlistGroupKey(x) === groupKey && !isOwned(x)).length >= getWishlistGroupLimit(groupKey)) continue;
             next.push(normalized);
           }
           state.wishlist = next;
@@ -1369,6 +2328,12 @@
       if (els.exportBtn) els.exportBtn.addEventListener("click", exportWishlist);
       if (els.importInput) els.importInput.addEventListener("change", () => importWishlist(els.importInput.files[0]));
       if (els.clearBtn) els.clearBtn.addEventListener("click", clearWishlist);
+      if (els.collapseAllBtn) els.collapseAllBtn.addEventListener("click", collapseAllWishlistGroups);
+      if (els.expandAllBtn) els.expandAllBtn.addEventListener("click", expandAllWishlistGroups);
+      if (els.generateCodeBtn) els.generateCodeBtn.addEventListener("click", generateWishlistCode);
+      if (els.copyCodeBtn) els.copyCodeBtn.addEventListener("click", copyWishlistCode);
+      if (els.loadCodeBtn) els.loadCodeBtn.addEventListener("click", loadWishlistCode);
+      if (els.viewToggleBtn) els.viewToggleBtn.addEventListener("click", toggleLayoutMode);
     }
 
     async function loadData() {
@@ -1397,7 +2362,9 @@
     }
 
     loadWishlist();
+    loadCollapsedGroups();
     bindEvents();
+    loadLayoutMode();
     renderWishlist();
     loadData();
   </script>
