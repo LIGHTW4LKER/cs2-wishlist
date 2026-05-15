@@ -434,6 +434,42 @@
 
 
 
+
+    .saved-tools {
+      display: grid;
+      gap: 8px;
+      padding: 0 18px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .saved-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .saved-load-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) .7fr .7fr;
+      gap: 8px;
+    }
+
+    .saved-tools .btn {
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+
+    .full-btn {
+      width: 100%;
+    }
+
+    @media (max-width: 740px) {
+      .saved-buttons,
+      .saved-load-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .share-tools {
       display: grid;
       gap: 8px;
@@ -1160,6 +1196,12 @@
       }
     }
 
+  
+    /* v21 fix: child weapon spoilers must collapse in wishlist-left mode */
+    .layout.wishlist-view .wishlist .weapon-group.collapsed > .wish-items {
+      display: none !important;
+    }
+
   </style>
 </head>
 <body>
@@ -1224,6 +1266,23 @@
           <textarea id="shareCodeInput" rows="3" placeholder="Здесь появится код списка. Или вставь чужой код и нажми «Загрузить код»."></textarea>
         </div>
 
+        <div class="saved-tools">
+          <div class="saved-buttons">
+            <button id="saveListBtn" class="btn">Сохранить список</button>
+            <button id="newListBtn" class="btn">Новый список</button>
+          </div>
+
+          <div class="saved-load-row">
+            <select id="savedListSelect">
+              <option value="">Сохранённые списки</option>
+            </select>
+            <button id="loadSavedListBtn" class="btn primary">Открыть</button>
+            <button id="deleteSavedListBtn" class="btn danger">Удалить</button>
+          </div>
+
+          <button id="clearWishlistBtn" class="btn danger full-btn">Очистить весь список</button>
+        </div>
+
         <div class="content">
           <div id="wishlist" class="wish-list"></div>
           <div id="emptyWishlist" class="empty">Wishlist пустой.</div>
@@ -1239,6 +1298,7 @@
     const STORAGE_KEY = "cs2_skin_wishlist_v1";
     const COLLAPSE_STORAGE_KEY = "cs2_skin_wishlist_collapsed_groups_v1";
     const LAYOUT_STORAGE_KEY = "cs2_skin_wishlist_layout_mode_v1";
+    const SAVED_LISTS_STORAGE_KEY = "cs2_skin_wishlist_saved_lists_v1";
     const MAX_PER_WEAPON = 5;
     const MAX_PER_SPECIAL_GROUP = 10;
     const PAGE_SIZE = 80;
@@ -1273,6 +1333,12 @@
       copyCodeBtn: document.getElementById("copyCodeBtn"),
       loadCodeBtn: document.getElementById("loadCodeBtn"),
       shareCodeInput: document.getElementById("shareCodeInput"),
+      saveListBtn: document.getElementById("saveListBtn"),
+      newListBtn: document.getElementById("newListBtn"),
+      savedListSelect: document.getElementById("savedListSelect"),
+      loadSavedListBtn: document.getElementById("loadSavedListBtn"),
+      deleteSavedListBtn: document.getElementById("deleteSavedListBtn"),
+      clearWishlistBtn: document.getElementById("clearWishlistBtn"),
       exportBtn: document.getElementById("exportBtn"),
       importInput: document.getElementById("importInput"),
       clearBtn: document.getElementById("clearBtn"),
@@ -2197,7 +2263,7 @@
         version: 2,
         createdAt: new Date().toISOString(),
         ids: state.wishlist.map(item => item.id),
-        items: state.wishlist.map(item => ({ id: item.id, owned: Boolean(item.owned) }))
+        items: serializeWishlistItems()
       };
 
       const code = encodeSharePayload(payload);
@@ -2274,6 +2340,128 @@
       showToast("Wishlist загружен из кода");
     }
 
+    function serializeWishlistItems() {
+      return state.wishlist.map(item => ({
+        id: item.id,
+        owned: Boolean(item.owned)
+      }));
+    }
+
+    function loadSavedLists() {
+      try {
+        const stored = localStorage.getItem(SAVED_LISTS_STORAGE_KEY);
+        const parsed = stored ? JSON.parse(stored) : {};
+        return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveSavedLists(lists) {
+      localStorage.setItem(SAVED_LISTS_STORAGE_KEY, JSON.stringify(lists));
+    }
+
+    function refreshSavedListSelect(selectedName = "") {
+      if (!els.savedListSelect) return;
+
+      const lists = loadSavedLists();
+      const names = Object.keys(lists).sort((a, b) => a.localeCompare(b));
+
+      els.savedListSelect.innerHTML = `<option value="">Сохранённые списки</option>` + names
+        .map(name => `<option value="${escapeHtml(name)}">${escapeHtml(name)} · ${lists[name].items?.length || 0}</option>`)
+        .join("");
+
+      if (selectedName && lists[selectedName]) {
+        els.savedListSelect.value = selectedName;
+      }
+    }
+
+    function saveCurrentListNamed() {
+      if (!state.wishlist.length) {
+        showToast("Wishlist пустой");
+        return;
+      }
+
+      const name = prompt("Название списка:", "");
+      if (!name) return;
+
+      const cleanName = name.trim();
+      if (!cleanName) return;
+
+      const lists = loadSavedLists();
+
+      lists[cleanName] = {
+        name: cleanName,
+        updatedAt: new Date().toISOString(),
+        items: serializeWishlistItems()
+      };
+
+      saveSavedLists(lists);
+      refreshSavedListSelect(cleanName);
+      showToast(`Список сохранён: ${cleanName}`);
+    }
+
+    function startNewWishlist() {
+      if (state.wishlist.length) {
+        const ok = confirm("Создать новый пустой wishlist? Текущий список останется только если ты заранее сохранил его.");
+        if (!ok) return;
+      }
+
+      state.wishlist = [];
+      saveWishlist();
+      renderWishlist();
+      renderSkins();
+      showToast("Создан новый пустой wishlist");
+    }
+
+    function loadSavedWishlist() {
+      const name = els.savedListSelect?.value || "";
+      if (!name) {
+        showToast("Выбери сохранённый список");
+        return;
+      }
+
+      if (!state.allSkins.length) {
+        alert("База скинов ещё не загрузилась. Подожди пару секунд и попробуй снова.");
+        return;
+      }
+
+      const lists = loadSavedLists();
+      const saved = lists[name];
+
+      if (!saved || !Array.isArray(saved.items)) {
+        alert("Не удалось открыть этот список.");
+        refreshSavedListSelect();
+        return;
+      }
+
+      const next = buildWishlistFromEntries(saved.items);
+
+      state.wishlist = next;
+      saveWishlist();
+      renderWishlist();
+      renderSkins();
+      showToast(`Открыт список: ${name}`);
+    }
+
+    function deleteSavedWishlist() {
+      const name = els.savedListSelect?.value || "";
+      if (!name) {
+        showToast("Выбери сохранённый список");
+        return;
+      }
+
+      const ok = confirm(`Удалить сохранённый список «${name}»? Текущий wishlist на странице не будет очищен.`);
+      if (!ok) return;
+
+      const lists = loadSavedLists();
+      delete lists[name];
+
+      saveSavedLists(lists);
+      refreshSavedListSelect();
+      showToast("Сохранённый список удалён");
+    }
+
     function exportWishlist() {
       const payload = { app: "CS2 Skin Wishlist", version: 1, exportedAt: new Date().toISOString(), maxPerWeapon: MAX_PER_WEAPON, maxPerSpecialGroup: MAX_PER_SPECIAL_GROUP, items: state.wishlist };
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -2333,6 +2521,11 @@
       if (els.generateCodeBtn) els.generateCodeBtn.addEventListener("click", generateWishlistCode);
       if (els.copyCodeBtn) els.copyCodeBtn.addEventListener("click", copyWishlistCode);
       if (els.loadCodeBtn) els.loadCodeBtn.addEventListener("click", loadWishlistCode);
+      if (els.clearWishlistBtn) els.clearWishlistBtn.addEventListener("click", clearWishlist);
+      if (els.saveListBtn) els.saveListBtn.addEventListener("click", saveCurrentListNamed);
+      if (els.newListBtn) els.newListBtn.addEventListener("click", startNewWishlist);
+      if (els.loadSavedListBtn) els.loadSavedListBtn.addEventListener("click", loadSavedWishlist);
+      if (els.deleteSavedListBtn) els.deleteSavedListBtn.addEventListener("click", deleteSavedWishlist);
       if (els.viewToggleBtn) els.viewToggleBtn.addEventListener("click", toggleLayoutMode);
     }
 
@@ -2365,6 +2558,7 @@
     loadCollapsedGroups();
     bindEvents();
     loadLayoutMode();
+    refreshSavedListSelect();
     renderWishlist();
     loadData();
   </script>
