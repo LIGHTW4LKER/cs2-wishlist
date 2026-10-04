@@ -1202,6 +1202,321 @@
       display: none !important;
     }
 
+    /* ===== Loadout (CS2-style slots at the top) ===== */
+    .loadout { margin-bottom: 22px; }
+
+    .loadout-head-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .side-tabs {
+      display: inline-flex;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #0e1118;
+    }
+
+    .side-tab {
+      min-width: 56px;
+      padding: 9px 16px;
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-weight: 800;
+      letter-spacing: .04em;
+      transition: background .15s ease, color .15s ease;
+    }
+
+    .side-tab:hover { color: var(--text); background: rgba(255,255,255,.04); }
+    .side-tab[data-side="T"].active  { color: #ffd9a0; background: rgba(255,190,100,.14); }
+    .side-tab[data-side="CT"].active { color: #bcd4ff; background: rgba(120,170,255,.16); }
+
+    .loadout-body {
+      display: grid;
+      grid-template-columns: minmax(130px, .75fr) repeat(3, minmax(0, 1fr)) minmax(130px, .75fr);
+      gap: 14px;
+      align-items: start;
+      padding: 18px;
+    }
+
+    .loadout-col {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .loadout.collapsed .loadout-body { display: none; }
+    .loadout.collapsed .panel-head { border-bottom: 0; }
+
+    .loadout-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .loadout-group-title {
+      margin: 0;
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .loadout-slots {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .slot {
+      --rarity: var(--line);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-height: 108px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(27,31,42,.95), rgba(18,21,29,.97));
+      cursor: pointer;
+      outline: none;
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+
+    .slot:hover,
+    .slot:focus-visible {
+      transform: translateY(-1px);
+      border-color: rgba(159,179,255,.5);
+    }
+
+    .slot.filled { box-shadow: inset 0 -3px 0 var(--rarity); }
+
+    .slot-label {
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .04em;
+      color: var(--soft);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-right: 22px;
+    }
+
+    .slot-art {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      min-height: 56px;
+      overflow: hidden;
+    }
+
+    .slot-art img {
+      max-width: 100%;
+      max-height: 58px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,.4));
+      pointer-events: none;
+    }
+
+    .slot-plus {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px dashed #455064;
+      border-radius: 50%;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .slot:hover .slot-plus { color: var(--accent); border-color: rgba(159,179,255,.6); }
+
+    .slot-name {
+      font-size: 11px;
+      line-height: 1.25;
+      color: var(--muted);
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .slot.filled .slot-name { color: var(--text); font-weight: 600; }
+
+    .slot-clear {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: rgba(15,17,21,.7);
+      color: var(--muted);
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .slot-clear:hover { color: var(--danger); border-color: rgba(255,155,155,.35); }
+
+    /* Skin picker modal */
+    body.modal-open { overflow: hidden; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(5,7,10,.72);
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-dialog {
+      position: relative;
+      width: min(980px, 100%);
+      max-height: min(86vh, 860px);
+      display: flex;
+      flex-direction: column;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .modal-head h2 { margin: 0 0 3px; font-size: 18px; letter-spacing: -.02em; }
+    .modal-head small { color: var(--muted); }
+
+    .modal-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 10px;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(15,17,21,.4);
+    }
+
+    .modal-controls select { width: auto; min-width: 180px; }
+
+    .check {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--soft);
+      font-size: 13px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .check input { width: auto; min-height: 0; }
+
+    .modal-content {
+      padding: 16px 18px;
+      overflow: auto;
+      flex: 1;
+    }
+
+    .picker-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 10px;
+    }
+
+    .pick {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px;
+      text-align: left;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(27,31,42,.95), rgba(18,21,29,.97));
+      cursor: pointer;
+      transition: transform .12s ease, border-color .12s ease;
+    }
+
+    .pick:hover { transform: translateY(-1px); border-color: rgba(159,179,255,.5); }
+    .pick.selected { border-color: rgba(155,230,187,.55); background: rgba(155,230,187,.08); }
+
+    .pick-art {
+      height: 74px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .pick-art img {
+      max-width: 100%;
+      max-height: 70px;
+      object-fit: contain;
+      filter: drop-shadow(0 8px 10px rgba(0,0,0,.4));
+    }
+
+    .pick-name {
+      font-size: 12px;
+      font-weight: 650;
+      line-height: 1.25;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 2.5em;
+    }
+
+    .pick-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .pick-star { color: var(--accent); font-weight: 750; white-space: nowrap; }
+
+    .modal-foot {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 12px 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .modal-foot .toolbar-info { margin-right: auto; }
+
+    @media (max-width: 740px) {
+      .loadout-body { grid-template-columns: 1fr; }
+      .modal-controls { grid-template-columns: 1fr; }
+      .modal-controls select { width: 100%; }
+      .modal-foot { flex-wrap: wrap; }
+    }
+
   </style>
 </head>
 <body>
@@ -1222,6 +1537,24 @@
         </button>
       </div>
     </header>
+
+    <section id="loadoutPanel" class="panel loadout">
+      <div class="panel-head">
+        <div>
+          <h2>Loadout</h2>
+          <small>Экипировано: <span id="loadoutCount">0</span> · нажми на слот, чтобы выбрать скин</small>
+        </div>
+        <div class="loadout-head-actions">
+          <div class="side-tabs" role="tablist" aria-label="Сторона">
+            <button class="side-tab active" type="button" role="tab" data-side="CT" aria-selected="true">Equip CT</button>
+            <button class="side-tab" type="button" role="tab" data-side="T" aria-selected="false">Equip T</button>
+          </div>
+          <button id="loadoutClearBtn" class="btn danger" type="button">Очистить</button>
+          <button id="loadoutCollapseBtn" class="btn" type="button">Свернуть</button>
+        </div>
+      </div>
+      <div id="loadoutBody" class="loadout-body"></div>
+    </section>
 
     <section id="layout" class="layout">
       <section class="panel search-panel">
@@ -1290,6 +1623,33 @@
       </aside>
     </section>
   </main>
+
+  <div id="pickerModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="pickerTitle">
+    <div class="modal-backdrop" id="pickerBackdrop"></div>
+    <div class="modal-dialog">
+      <div class="modal-head">
+        <div>
+          <h2 id="pickerTitle">Выбор скина</h2>
+          <small id="pickerSubtitle"></small>
+        </div>
+        <button id="pickerCloseBtn" class="icon-btn" type="button" aria-label="Закрыть">×</button>
+      </div>
+      <div class="modal-controls">
+        <input id="pickerSearch" type="search" placeholder="Поиск по названию…" autocomplete="off">
+        <select id="pickerWeaponSelect" class="hidden" aria-label="Оружие"></select>
+        <label class="check"><input id="pickerOnlyWishlist" type="checkbox"> Только из wishlist</label>
+      </div>
+      <div class="modal-content">
+        <div id="pickerGrid" class="picker-grid"></div>
+        <div id="pickerEmpty" class="empty hidden">Ничего не найдено.</div>
+      </div>
+      <div class="modal-foot">
+        <span id="pickerInfo" class="toolbar-info"></span>
+        <button id="pickerMoreBtn" class="btn primary" type="button">Показать больше</button>
+        <button id="pickerClearBtn" class="btn danger" type="button">Снять скин</button>
+      </div>
+    </div>
+  </div>
 
   <div id="toast" class="toast"></div>
 
@@ -2554,12 +2914,410 @@
       }
     }
 
+    /* ===== Loadout (CS2-style) ===== */
+    const LOADOUT_STORAGE_KEY = "cs2_skin_wishlist_loadout_v1";
+    const LOADOUT_UI_KEY = "cs2_skin_wishlist_loadout_ui_v1";
+    const PICKER_PAGE_SIZE = 60;
+
+    // Слот может объединять несколько оружий (как в CS2): в окне выбора появится фильтр по оружию.
+    const weaponSlot = (...names) => ({ id: names.join("|"), label: names.join(" / "), weapons: names });
+    const knifeSlot = { id: "Knife", label: "Knife", category: "Knives" };
+    const glovesSlot = { id: "Gloves", label: "Gloves", category: "Gloves" };
+
+    // 5 колонок, в каждой не больше 5 слотов: Knife | Pistols | Mid-tier | Rifles | Gloves
+    const LOADOUT_LAYOUT = {
+      T: [
+        [{ title: "Knife", slots: [knifeSlot] }],
+        [{ title: "Pistols", slots: [
+          { ...weaponSlot("Glock-18"), locked: true },
+          weaponSlot("P250"),
+          weaponSlot("Tec-9", "CZ75-Auto"),
+          weaponSlot("Desert Eagle", "R8 Revolver"),
+          weaponSlot("Dual Berettas")
+        ] }],
+        [{ title: "Mid-tier", slots: [
+          weaponSlot("MAC-10"),
+          weaponSlot("MP7", "MP5-SD"),
+          weaponSlot("UMP-45", "P90", "PP-Bizon"),
+          weaponSlot("Nova", "XM1014", "Sawed-Off"),
+          weaponSlot("M249", "Negev")
+        ] }],
+        [{ title: "Rifles", slots: [
+          weaponSlot("AK-47"),
+          weaponSlot("Galil AR", "SG 553"),
+          weaponSlot("AWP"),
+          weaponSlot("SSG 08"),
+          weaponSlot("G3SG1")
+        ] }],
+        [{ title: "Gloves", slots: [glovesSlot] }]
+      ],
+      CT: [
+        [{ title: "Knife", slots: [knifeSlot] }],
+        [{ title: "Pistols", slots: [
+          { ...weaponSlot("USP-S", "P2000"), locked: true },
+          weaponSlot("P250"),
+          weaponSlot("Five-SeveN", "CZ75-Auto"),
+          weaponSlot("Desert Eagle", "R8 Revolver"),
+          weaponSlot("Dual Berettas")
+        ] }],
+        [{ title: "Mid-tier", slots: [
+          weaponSlot("MP9"),
+          weaponSlot("MP7", "MP5-SD"),
+          weaponSlot("UMP-45", "P90", "PP-Bizon"),
+          weaponSlot("Nova", "XM1014", "MAG-7"),
+          weaponSlot("M249", "Negev")
+        ] }],
+        [{ title: "Rifles", slots: [
+          weaponSlot("M4A4", "M4A1-S"),
+          weaponSlot("FAMAS", "AUG"),
+          weaponSlot("AWP"),
+          weaponSlot("SSG 08"),
+          weaponSlot("SCAR-20")
+        ] }],
+        [{ title: "Gloves", slots: [glovesSlot] }]
+      ]
+    };
+
+    // Нейтральные названия слотов, пока скин не выбран.
+    const LOADOUT_NEUTRAL_LABELS = { "Pistols": "Pistol", "Mid-tier": "Mid-tier", "Rifles": "Rifle" };
+
+    // Любой слот колонки принимает любое оружие этой колонки (для своей стороны).
+    // Исключение: стартовый пистолет (locked) — только Glock-18 / USP-S / P2000.
+    for (const side of Object.keys(LOADOUT_LAYOUT)) {
+      for (const column of LOADOUT_LAYOUT[side]) {
+        for (const group of column) {
+          const free = group.slots.filter(slot => slot.weapons && !slot.locked);
+          if (free.length < 2) continue;
+          const pool = [...new Set(free.flatMap(slot => slot.weapons))];
+          free.forEach(slot => {
+            slot.weapons = pool;
+            slot.neutral = LOADOUT_NEUTRAL_LABELS[group.title] || slot.label;
+          });
+        }
+      }
+    }
+
+    const loadoutState = { equipped: {}, side: "CT", collapsed: false, picker: null };
+
+    function loadLoadout() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(LOADOUT_STORAGE_KEY) || "{}");
+        loadoutState.equipped = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+      } catch { loadoutState.equipped = {}; }
+
+      try {
+        const ui = JSON.parse(localStorage.getItem(LOADOUT_UI_KEY) || "{}");
+        loadoutState.side = ui.side === "T" ? "T" : "CT";
+        loadoutState.collapsed = Boolean(ui.collapsed);
+      } catch {}
+    }
+
+    function saveLoadout() {
+      localStorage.setItem(LOADOUT_STORAGE_KEY, JSON.stringify(loadoutState.equipped));
+    }
+
+    function saveLoadoutUi() {
+      localStorage.setItem(LOADOUT_UI_KEY, JSON.stringify({ side: loadoutState.side, collapsed: loadoutState.collapsed }));
+    }
+
+    function loadoutSlotKey(side, slot) { return `${side}:${slot.id}`; }
+
+    function findLoadoutSlot(slotId) {
+      for (const column of LOADOUT_LAYOUT[loadoutState.side]) {
+        for (const group of column) {
+          const slot = group.slots.find(s => s.id === slotId);
+          if (slot) return slot;
+        }
+      }
+      return null;
+    }
+
+    // Название оружия выбранного скина (для старых записей без поля weapon берём из названия «AK-47 | Redline»).
+    function getEquippedWeaponName(eq) {
+      if (eq.weapon) return eq.weapon;
+      return String(eq.name || "").split(" | ")[0].replace(/^★\s*/, "").replace(/^StatTrak™\s*/, "").trim();
+    }
+
+    function renderLoadoutSlot(slot) {
+      const eq = loadoutState.equipped[loadoutSlotKey(loadoutState.side, slot)];
+      const style = eq ? ` style="--rarity:${escapeHtml(eq.rarityColor || "#8b93a3")}"` : "";
+
+      return `
+        <div class="slot ${eq ? "filled" : ""}" role="button" tabindex="0" data-slot="${escapeHtml(slot.id)}"${style}>
+          <div class="slot-label">${escapeHtml(eq ? getEquippedWeaponName(eq) : (slot.neutral || slot.label))}</div>
+          <div class="slot-art">${eq && eq.image
+            ? `<img loading="lazy" src="${escapeHtml(eq.image)}" alt="${escapeHtml(eq.name || "")}">`
+            : `<span class="slot-plus">+</span>`}</div>
+          <div class="slot-name">${eq ? escapeHtml(eq.name || "") : "Не выбрано"}</div>
+          ${eq ? `<button class="slot-clear" type="button" data-clear="${escapeHtml(slot.id)}" title="Снять скин" aria-label="Снять скин">×</button>` : ""}
+        </div>`;
+    }
+
+    function renderLoadout() {
+      const panel = document.getElementById("loadoutPanel");
+      const body = document.getElementById("loadoutBody");
+      if (!panel || !body) return;
+
+      const columns = LOADOUT_LAYOUT[loadoutState.side];
+
+      panel.classList.toggle("collapsed", loadoutState.collapsed);
+      document.getElementById("loadoutCollapseBtn").textContent = loadoutState.collapsed ? "Развернуть" : "Свернуть";
+
+      document.querySelectorAll(".side-tab").forEach(btn => {
+        const active = btn.dataset.side === loadoutState.side;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-selected", String(active));
+      });
+
+      const validKeys = new Set();
+      for (const side of Object.keys(LOADOUT_LAYOUT)) {
+        for (const column of LOADOUT_LAYOUT[side]) {
+          for (const group of column) group.slots.forEach(slot => validKeys.add(loadoutSlotKey(side, slot)));
+        }
+      }
+      const total = Object.keys(loadoutState.equipped).filter(key => validKeys.has(key)).length;
+      document.getElementById("loadoutCount").textContent = String(total);
+
+      body.innerHTML = columns.map(column => `
+        <div class="loadout-col">${column.map(group => `
+          <section class="loadout-group">
+            <h3 class="loadout-group-title">${escapeHtml(group.title)}</h3>
+            <div class="loadout-slots">${group.slots.map(renderLoadoutSlot).join("")}</div>
+          </section>`).join("")}
+        </div>`).join("");
+    }
+
+    function unequipSlot(slotId) {
+      const slot = findLoadoutSlot(slotId);
+      if (!slot) return;
+      delete loadoutState.equipped[loadoutSlotKey(loadoutState.side, slot)];
+      saveLoadout();
+      renderLoadout();
+      showToast("Скин снят");
+    }
+
+    function clearLoadout() {
+      if (!Object.keys(loadoutState.equipped).length) return;
+      if (!confirm("Очистить весь loadout (T и CT)?")) return;
+      loadoutState.equipped = {};
+      saveLoadout();
+      renderLoadout();
+      showToast("Loadout очищен");
+    }
+
+    /* --- picker --- */
+    function getPickerCandidates() {
+      const p = loadoutState.picker;
+      if (!p) return [];
+      const q = p.search.trim().toLowerCase();
+
+      return state.allSkins
+        .filter(item => {
+          if (p.slot.weapons ? !p.slot.weapons.includes(item.weapon) : item.category !== p.slot.category) return false;
+          if (p.weapon && item.weapon !== p.weapon) return false;
+          if (p.onlyWishlist && !isInWishlist(item.id)) return false;
+          if (q && !item.name.toLowerCase().includes(q)) return false;
+          return true;
+        })
+        .sort((a, b) => Number(isInWishlist(b.id)) - Number(isInWishlist(a.id)));
+    }
+
+    function renderPicker() {
+      const p = loadoutState.picker;
+      if (!p) return;
+
+      const grid = document.getElementById("pickerGrid");
+      const empty = document.getElementById("pickerEmpty");
+      const info = document.getElementById("pickerInfo");
+      const moreBtn = document.getElementById("pickerMoreBtn");
+      const equippedId = loadoutState.equipped[p.key]?.id;
+
+      if (!state.allSkins.length) {
+        grid.innerHTML = "";
+        empty.textContent = "База скинов ещё загружается…";
+        empty.classList.remove("hidden");
+        info.textContent = "";
+        moreBtn.disabled = true;
+        return;
+      }
+
+      empty.textContent = "Ничего не найдено.";
+
+      const all = getPickerCandidates();
+      const visible = all.slice(0, p.visible);
+
+      grid.innerHTML = visible.map(item => `
+        <button class="pick ${item.id === equippedId ? "selected" : ""}" type="button" data-pick="${escapeHtml(item.id)}" style="border-bottom:3px solid ${escapeHtml(item.rarityColor)}">
+          <div class="pick-art"><img loading="lazy" src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}"></div>
+          <div class="pick-name">${escapeHtml(item.name)}</div>
+          <div class="pick-meta">
+            <span>${escapeHtml(item.rarity || "—")}</span>
+            ${isInWishlist(item.id) ? `<span class="pick-star">★ wishlist</span>` : ""}
+          </div>
+        </button>`).join("");
+
+      empty.classList.toggle("hidden", all.length !== 0);
+      info.textContent = `${all.length} найдено · показано ${visible.length}`;
+      moreBtn.disabled = visible.length >= all.length;
+    }
+
+    function openPicker(slotId) {
+      const slot = findLoadoutSlot(slotId);
+      if (!slot) return;
+
+      const key = loadoutSlotKey(loadoutState.side, slot);
+      loadoutState.picker = { slot, key, search: "", weapon: "", onlyWishlist: false, visible: PICKER_PAGE_SIZE };
+
+      document.getElementById("pickerTitle").textContent = slot.neutral || slot.label;
+      document.getElementById("pickerSubtitle").textContent = `${loadoutState.side} · выбери скин для слота`;
+      document.getElementById("pickerSearch").value = "";
+      document.getElementById("pickerOnlyWishlist").checked = false;
+      document.getElementById("pickerClearBtn").classList.toggle("hidden", !loadoutState.equipped[key]);
+
+      const weaponSelect = document.getElementById("pickerWeaponSelect");
+
+      if (slot.category || (slot.weapons && slot.weapons.length > 1)) {
+        const weapons = slot.weapons
+          ? [...slot.weapons].sort((a, b) => a.localeCompare(b))
+          : [...new Set(state.allSkins.filter(s => s.category === slot.category).map(s => s.weapon))].sort((a, b) => a.localeCompare(b));
+        weaponSelect.innerHTML = `<option value="">Всё оружие</option>` +
+          weapons.map(w => `<option value="${escapeHtml(w)}">${escapeHtml(w)}</option>`).join("");
+        weaponSelect.classList.remove("hidden");
+      } else {
+        weaponSelect.innerHTML = "";
+        weaponSelect.classList.add("hidden");
+      }
+
+      document.getElementById("pickerModal").classList.remove("hidden");
+      document.body.classList.add("modal-open");
+      renderPicker();
+      document.getElementById("pickerSearch").focus();
+    }
+
+    function closePicker() {
+      loadoutState.picker = null;
+      document.getElementById("pickerModal").classList.add("hidden");
+      document.body.classList.remove("modal-open");
+    }
+
+    function equipSkin(id) {
+      const p = loadoutState.picker;
+      const skin = state.allSkins.find(item => item.id === id);
+      if (!p || !skin) return;
+
+      loadoutState.equipped[p.key] = {
+        id: skin.id,
+        name: skin.name,
+        weapon: skin.weapon,
+        image: skin.image,
+        rarity: skin.rarity,
+        rarityColor: skin.rarityColor
+      };
+
+      saveLoadout();
+      renderLoadout();
+      closePicker();
+      showToast(`Экипировано: ${skin.name}`);
+    }
+
+    function initLoadout() {
+      loadLoadout();
+      renderLoadout();
+
+      document.querySelectorAll(".side-tab").forEach(btn => btn.addEventListener("click", () => {
+        loadoutState.side = btn.dataset.side === "CT" ? "CT" : "T";
+        saveLoadoutUi();
+        renderLoadout();
+      }));
+
+      document.getElementById("loadoutCollapseBtn").addEventListener("click", () => {
+        loadoutState.collapsed = !loadoutState.collapsed;
+        saveLoadoutUi();
+        renderLoadout();
+      });
+
+      document.getElementById("loadoutClearBtn").addEventListener("click", clearLoadout);
+
+      const body = document.getElementById("loadoutBody");
+
+      body.addEventListener("click", event => {
+        const clear = event.target.closest("[data-clear]");
+        if (clear) {
+          event.stopPropagation();
+          unequipSlot(clear.dataset.clear);
+          return;
+        }
+
+        const slot = event.target.closest("[data-slot]");
+        if (slot) openPicker(slot.dataset.slot);
+      });
+
+      body.addEventListener("keydown", event => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        if (event.target.closest("[data-clear]")) return;
+        const slot = event.target.closest("[data-slot]");
+        if (!slot) return;
+        event.preventDefault();
+        openPicker(slot.dataset.slot);
+      });
+
+      document.getElementById("pickerCloseBtn").addEventListener("click", closePicker);
+      document.getElementById("pickerBackdrop").addEventListener("click", closePicker);
+
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && loadoutState.picker) closePicker();
+      });
+
+      document.getElementById("pickerSearch").addEventListener("input", event => {
+        if (!loadoutState.picker) return;
+        loadoutState.picker.search = event.target.value;
+        loadoutState.picker.visible = PICKER_PAGE_SIZE;
+        renderPicker();
+      });
+
+      document.getElementById("pickerWeaponSelect").addEventListener("change", event => {
+        if (!loadoutState.picker) return;
+        loadoutState.picker.weapon = event.target.value;
+        loadoutState.picker.visible = PICKER_PAGE_SIZE;
+        renderPicker();
+      });
+
+      document.getElementById("pickerOnlyWishlist").addEventListener("change", event => {
+        if (!loadoutState.picker) return;
+        loadoutState.picker.onlyWishlist = event.target.checked;
+        loadoutState.picker.visible = PICKER_PAGE_SIZE;
+        renderPicker();
+      });
+
+      document.getElementById("pickerMoreBtn").addEventListener("click", () => {
+        if (!loadoutState.picker) return;
+        loadoutState.picker.visible += PICKER_PAGE_SIZE;
+        renderPicker();
+      });
+
+      document.getElementById("pickerClearBtn").addEventListener("click", () => {
+        const p = loadoutState.picker;
+        if (!p) return;
+        delete loadoutState.equipped[p.key];
+        saveLoadout();
+        renderLoadout();
+        closePicker();
+        showToast("Скин снят");
+      });
+
+      document.getElementById("pickerGrid").addEventListener("click", event => {
+        const pick = event.target.closest("[data-pick]");
+        if (pick) equipSkin(pick.dataset.pick);
+      });
+    }
+
     loadWishlist();
     loadCollapsedGroups();
     bindEvents();
     loadLayoutMode();
     refreshSavedListSelect();
     renderWishlist();
+    initLoadout();
     loadData();
   </script>
 </body>
