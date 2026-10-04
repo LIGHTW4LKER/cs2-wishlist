@@ -22,17 +22,6 @@ https://raw.githubusercontent.com/ByMykel/CSGO-API/main/public/api/en/skins.json
 
 Reason: it works from a static GitHub Pages frontend without exposing any private API key.
 
-## Why not direct CSGOSKINS.GG API in frontend?
-
-CSGOSKINS.GG has an official API, but it requires authentication and an active subscription. Do not put an API key into public frontend code on GitHub Pages. Anyone can copy it from DevTools.
-
-Correct architecture for CSGOSKINS.GG API:
-
-```txt
-Browser → your backend/proxy → CSGOSKINS.GG API
-```
-
-For a simple static MVP, use public data without private keys.
 
 ## Run locally
 
@@ -50,16 +39,6 @@ Then open:
 http://localhost:8000
 ```
 
-## Deploy to GitHub Pages
-
-1. Create a new GitHub repository.
-2. Upload `index.html`, `README.md`, `privacy.md`.
-3. Go to repository `Settings`.
-4. Go to `Pages`.
-5. Source: `Deploy from a branch`.
-6. Branch: `main`.
-7. Folder: `/root`.
-8. Save.
 
 ## Privacy
 
